@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Snake Evolution</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      text-align: center;
+      padding: 10px;
+      font-size: 1.2em;
+      font-weight: bold;
+      background: #222;
+    }
+    #gameWrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    canvas {
+      background: #000;
+      display: block;
+    }
+    #overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      text-align: center;
+    }
+    #overlay h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      animation: glow 2s infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #0f0, 0 0 20px #0f0; }
+      to { text-shadow: 0 0 20px #0f0, 0 0 40px #0f0; }
+    }
+    button {
+      background: #0f0;
+      border: none;
+      padding: 6px 14px;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 6px;
+      margin: 5px;
+    }
+    #pauseOverlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      font-weight: bold;
+      z-index: 9;
+    }
+    .flash {
+      animation: flashRed 0.5s;
+    }
+    @keyframes flashRed {
+      0% { background: rgba(255,0,0,0.6); }
+      100% { background: rgba(0,0,0,0.8); }
+    }
+    /* Banners laterais */
+    .banner {
+      position: absolute;
+      top: 20%;
+      width: 120px;
+      height: auto;
+      cursor: pointer;
+    }
+    .banner-left { left: 10px; }
+    .banner-right { right: 10px; }
+    footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9em;
+      background: #222;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Snake Evolution – Pontos: <span id="score">0</span> | Recorde: <span id="highscore">0</span>
+    <button id="musicBtn">🎵 Música</button>
+    <button id="fsBtn">⛶ Tela Cheia</button>
+    <button onclick="window.location.href='index.html'">🏠 Voltar</button>
+  </header>
+  
+
+  <div id="gameWrapper">
+    <!-- Banners -->
+    <a href="https://go.hotmart.com/F101910992I" target="_blank">
+      <img src="images/afiliado1.jpg" class="banner banner-left" alt="Afiliado 1">
+    </a>
+    <a href="https://app.monetizze.com.br/r/AWC25543916?u=c&pl=KC160334" target="_blank">
+      <img src="images/afiliado2.jpg" class="banner banner-right" alt="Afiliado 2">
+    </a>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="overlay">
+      <h1>🐍 Snake Evolution</h1>
+      <button id="startBtn">▶ Iniciar Jogo</button>
+    </div>
+    <div id="pauseOverlay">⏸️ Jogo Pausado</div>
+  </div>
+
+  <!-- Rodapé -->
+  <footer>
+    <p id="footerText">© 2025 Games On-Line. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Sons -->
+  <audio id="eatSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+  <audio id="dieSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+  <audio id="winSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+  <audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const overlay = document.getElementById("overlay");
+    const pauseOverlay = document.getElementById("pauseOverlay");
+    const startBtn = document.getElementById("startBtn");
+    const scoreEl = document.getElementById("score");
+    const highscoreEl = document.getElementById("highscore");
+    const musicBtn = document.getElementById("musicBtn");
+    const fsBtn = document.getElementById("fsBtn");
+    const footerText = document.getElementById("footerText");
+
+    const eatSound = document.getElementById("eatSound");
+    const dieSound = document.getElementById("dieSound");
+    const winSound = document.getElementById("winSound");
+    const bgMusic = document.getElementById("bgMusic");
+
+    let gridSize = 20;
+    let snake, food, obstacles, dx, dy;
+    let score = 0, highscore = 0, level = 1;
+    let speed = 200, paused = false, gameInterval;
+
+    function resizeCanvas() {
+      let size = Math.min(window.innerWidth - 160, window.innerHeight - 120);
+      canvas.width = size;
+      canvas.height = size;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function initGame() {
+      snake = [{x: 10, y: 10}];
+      dx = 1; dy = 0;
+      score = 0;
+      level = 1;
+      speed = 200;
+      spawnFood();
+      obstacles = [];
+      draw();
+    }
+
+    function spawnFood() {
+      food = {
+        x: Math.floor(Math.random() * (canvas.width / gridSize)),
+        y: Math.floor(Math.random() * (canvas.height / gridSize))
+      };
+    }
+
+    function drawSnake() {
+      ctx.fillStyle = "lime";
+      snake.forEach(p => ctx.fillRect(p.x * gridSize, p.y * gridSize, gridSize, gridSize));
+    }
+
+    function drawFood() {
+      ctx.fillStyle = "red";
+      ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+    }
+
+    function drawObstacles() {
+      ctx.fillStyle = "gray";
+      obstacles.forEach(o => ctx.fillRect(o.x * gridSize, o.y * gridSize, gridSize, gridSize));
+    }
+
+    function update() {
+      if (paused) return;
+      let head = {x: snake[0].x + dx, y: snake[0].y + dy};
+
+      if (head.x < 0 || head.y < 0 || head.x >= canvas.width / gridSize || head.y >= canvas.height / gridSize || snake.some(p => p.x === head.x && p.y === head.y) || obstacles.some(o => o.x === head.x && o.y === head.y)) {
+        dieSound.play();
+        overlay.classList.add("flash");
+        overlay.innerHTML = `<h1>Você Perdeu! Tente Novamente!</h1><button onclick="restart()">🔄 Reiniciar</button>`;
+        overlay.style.display = "flex";
+        clearInterval(gameInterval);
+        return;
+      }
+
+      snake.unshift(head);
+
+      if (head.x === food.x && head.y === food.y) {
+        eatSound.play();
+        score++;
+        if (score % 10 === 0) {
+          speed = Math.max(50, speed * 0.6);
+        }
+        if (score % 50 === 0) nextLevel();
+        spawnFood();
+      } else {
+        snake.pop();
+      }
+
+      draw();
+    }
+
+    function draw() {
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      drawSnake();
+      drawFood();
+      drawObstacles();
+      scoreEl.textContent = score;
+      if (score > highscore) {
+        highscore = score;
+        highscoreEl.textContent = highscore;
+      }
+    }
+
+    function nextLevel() {
+      level++;
+      if (level > 25) {
+        winSound.play();
+        launchConfetti();
+        overlay.innerHTML = `<h1>🎉 Você Ganhou! Parabéns!!! 🎉</h1><button onclick="restart()">▶ Jogar Novamente</button>`;
+        overlay.style.display = "flex";
+        clearInterval(gameInterval);
+        return;
+      }
+      if (level >= 8) {
+        obstacles.push({x: Math.floor(Math.random() * (canvas.width / gridSize)), y: Math.floor(Math.random() * (canvas.height / gridSize))});
+      }
+    }
+
+    function restart() {
+      overlay.classList.remove("flash");
+      overlay.style.display = "none";
+      initGame();
+      gameInterval = setInterval(update, speed);
+    }
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "ArrowUp" && dy === 0) {dx = 0; dy = -1;}
+      if (e.key === "ArrowDown" && dy === 0) {dx = 0; dy = 1;}
+      if (e.key === "ArrowLeft" && dx === 0) {dx = -1; dy = 0;}
+      if (e.key === "ArrowRight" && dx === 0) {dx = 1; dy = 0;}
+      if (e.key.toLowerCase() === "p") togglePause();
+    });
+
+    function togglePause() {
+      paused = !paused;
+      pauseOverlay.style.display = paused ? "flex" : "none";
+    }
+
+    startBtn.onclick = () => {
+      overlay.style.display = "none";
+      initGame();
+      gameInterval = setInterval(update, speed);
+      bgMusic.play();
+    };
+
+    musicBtn.onclick = () => {
+      if (bgMusic.paused) { bgMusic.play(); } else { bgMusic.pause(); }
+    };
+
+    fsBtn.onclick = () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    };
+
+    // Cutscene inicial
+    window.onload = () => {
+      const savedLang = localStorage.getItem("lang") || "pt";
+      const t = texts[savedLang];
+      startBtn.textContent = t.start;
+      pauseOverlay.textContent = t.paused;
+      footerText.textContent = t.footer;
+
+      let cutsceneSnake = [{x: 2, y: 10}];
+      let steps = 0;
+      const cut = setInterval(() => {
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "lime";
+        ctx.fillRect(cutsceneSnake[0].x * gridSize, cutsceneSnake[0].y * gridSize, gridSize, gridSize);
+        cutsceneSnake[0].x++;
+        steps++;
+        if (steps > 15) {
+          clearInterval(cut);
+          overlay.style.display = "flex";
+        }
+      }, 150);
+    };
+
+    // Confete
+    function launchConfetti() {
+      const duration = 2000;
+      const end = Date.now() + duration;
+      (function frame() {
+        const colors = ["#0f0", "#ff0", "#f0f", "#0ff", "#f00"];
+        for (let i = 0; i < 10; i++) {
+          const confetti = document.createElement("div");
+          confetti.style.position = "absolute";
+          confetti.style.top = Math.random() * window.innerHeight + "px";
+          confetti.style.left = Math.random() * window.innerWidth + "px";
+          confetti.style.width = "6px";
+          confetti.style.height = "6px";
+          confetti.style.background = colors[Math.floor(Math.random()*colors.length)];
+          confetti.style.opacity = "0.8";
+          document.body.appendChild(confetti);
+          setTimeout(() => confetti.remove(), duration);
+        }
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+    }
+  </script>
+</body>
+</html>

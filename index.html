@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Games On-Line</title>
+  <meta name="description" content="Games On-Line - Jogue Snake e outros jogos divertidos diretamente no navegador." />
+  <meta name="keywords" content="jogos online, snake, games, navegador, grátis" />
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890693169488330" crossorigin="anonymous"></script>
+
+  <style>
+    :root{
+      --bg:#111;
+      --panel:#222;
+      --accent:lime;
+      --card:#1b1b1b;
+      --side-width:280px;
+      --gutter:20px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#fff}
+    header{
+      height:68px;
+      background:var(--panel);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 20px;
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
+    header h1{margin:0;color:var(--accent);font-size:1.25rem}
+    header .right{display:flex;gap:12px;align-items:center}
+    header .right button{background:#333;color:#fff;border:none;padding:8px 10px;border-radius:6px;cursor:pointer}
+
+    /* Side banners (fixos) */
+    #left-side, #right-side{
+      position:fixed;
+      top:88px; /* header + small gap */
+      width:var(--side-width);
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      padding:8px;
+      z-index:50;
+    }
+    #left-side{left:20px}
+    #right-side{right:-30px}
+    .banner{
+      width:80%;
+      height:200px;
+      border-radius:20px;
+      overflow:hidden;
+      background:#000;
+      display:block;
+      box-shadow:0 6px 18px rgba(0,0,0,0.5);
+      transition:transform .16s;
+    }
+    .banner img{width:100%;height:100%;object-fit:cover;display:block}
+    .banner:hover{transform:translateY(-6px)}
+
+    /* Central area: leave space for sidebars */
+    main{
+      display:block;
+      padding: calc(88px + var(--gutter)) calc(var(--gutter) + var(--side-width) + 20px) calc(80px + var(--gutter)) calc(var(--gutter) + var(--side-width) + 20px);
+      min-height: calc(100vh - 88px - 80px);
+      /* the padding left/right accounts for sidebars */
+    }
+
+    /* Cards grid */
+    .cards{
+      max-width:1200px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap:18px;
+    }
+    .card{
+      background:var(--card);
+      border-radius:12px;
+      padding:12px;
+      text-align:center;
+      transition:transform .18s, box-shadow .18s;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .card:hover{transform:translateY(-6px);box-shadow:0 14px 36px rgba(0,0,0,0.6)}
+    .card img{width:100%;height:150px;object-fit:contain;border-radius:8px;display:block;margin-bottom:10px}
+    .card h3{margin:0;color:#fff;font-size:1.05rem}
+    .card p{margin:8px 0 0;color:#ddd;font-size:.9rem}
+
+    footer{
+      height:25px;
+      background:var(--panel);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#ccc;
+      position:sticky;
+      bottom:0;
+      margin-top:24px;
+    }
+
+    /* responsive: hide side banners on small screens and make padding simpler */
+    @media (max-width: 1000px){
+      #left-side,#right-side{display:none}
+      main{padding:calc(88px + var(--gutter)) 20px calc(80px + var(--gutter)) 20px}
+    }
+
+    @media (max-width: 480px){
+      .card img{height:120px}
+      header h1{font-size:1rem}
+    }
+  </style>
+  
+  <!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890693169488330" crossorigin="anonymous"></script>
+
+</head>
+<body>
+  <header>
+    <h1>Games On-Line</h1>
+    <div class="right">
+      <!-- sem login (apenas botões visuais) -->
+    </div>
+  </header>
+
+  <!-- Left banners (fixos) -->
+  <div id="left-side" aria-hidden="false">
+    <a class="banner" href="https://go.hotmart.com/S60534663Q" target="_blank" rel="nofollow noopener">
+      <img src="https://i.imgur.com/zVlx6j4.png" width="100" height="100" alt="Afiliado 1">
+    </a>
+    <a class="banner" href="https://go.hotmart.com/S60534663Q" target="_blank" rel="nofollow noopener">
+      <img src="https://i.imgur.com/S9L8kDJ.png" width="100" height="100" alt="Afiliado 2">
+    </a>
+  </div>
+
+  <!-- Right banners (fixos) - se quiser outros links, substitua os href/src -->
+  <div id="right-side" aria-hidden="false">
+    <a class="banner" href="https://go.hotmart.com/S60534663Q" target="_blank" rel="nofollow noopener">
+      <img src="https://i.imgur.com/jQIVOOb.png" width="100" height="100" alt="Afiliado 4">
+    </a>
+    <a class="banner" href="https://go.hotmart.com/S60534663Q" target="_blank" rel="nofollow noopener">
+      <img src="https://i.imgur.com/qePUhEx.png" width="100" height="100" alt="Afiliado 5">
+    </a>
+  </div>
+
+  <!-- Main content -->
+  <main>
+    <div class="cards" role="list">
+      <a class="card" href="flappy_bird.html" role="listitem" aria-label="Flappy Bird Evolution">
+        <img src="image/flappy_bird_evolution.png" alt="Flappy Bird Evolution">
+        <h3>Flappy Bird Evolution</h3>
+        <p>Jogue Agora</p>
+      </a>
+
+      <div class="cards" role="list">
+        <a class="card" href="pong.html" role="listitem" aria-label="Pong Evolution">
+        <img src="image/pong_evolution.png" alt="Pong Evolution">
+        <h3>Pong Evolution</h3>
+        <p>Jogue Agora</p>
+      </a>
+      </div>
+
+      <div class="cards" role="list">
+        <a class="card" href="space_invaders.html" role="listitem" aria-label="Space Invaders Evolution">
+        <img src="image/space_invaders_evolution.png" alt="Space Invaders Evolution">
+        <h3>Space Invaders Evolution</h3>
+        <p>Jogue Agora</p>
+        </a>
+      </div>
+
+       <div class="cards" role="list">
+        <a class="card" href="snake.html" role="listitem" aria-label="Snake Evolution">
+        <img src="image/snake_evolution.png" alt="Snake Evolution">
+        <h3>Snake Evolution</h3>
+        <p>Jogue Agora</p>
+        </a>
+      </div>
+
+      <div class="cards" role="list">
+        <a class="card" href="tetris.html" role="listitem" aria-label="Tetris Evolution">
+        <img src="image/tetris_evolution.png" alt="Tetris Evolution">
+        <h3>Tetris Evolution</h3>
+        <p>Jogue Agora</p>
+        </a>
+      </div>
+
+      <div class="card" role="listitem">
+        <img src="image/futuro.jpg" alt="Em breve">
+        <h3>Em breve</h3>
+        <p>Jogo 6 — em desenvolvimento.</p>
+      </div>
+    </div>
+  </main>
+
+   <footer>
+    <p id="footerText">© 2025 Games On-Line. Todos os direitos reservados.</p>
+  </footer>
+</body>
+</html>

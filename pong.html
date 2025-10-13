@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pong Evolution</title>
+  <style>
+    :root{--bg:#111;--panel:#222;--accent:#0f0}
+    body{
+      margin: 0;
+      padding: 0;
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header{
+      text-align: center;
+      padding: 5px;
+      font-size: 1.2em;
+      font-weight: bold;
+      background: #222;
+    }
+    .title {
+       font-weight:700
+    }
+    .controls{
+    display:flex;
+    gap:8px;
+    align-items:center
+  }
+    header button{
+    background: #975;
+      border: none;
+      padding: 6px 14px;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 6px;
+      margin: 5px;
+  }
+    #gameWrapper{
+    flex:1;display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative
+  }
+    canvas{
+    background:#000;
+    display:block;
+    border:3px solid #333;
+    max-width:100%;
+    height:auto
+  }
+    /* overlay central igual aos outros jogos */
+    #overlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,0.8);
+    z-index:5;
+    flex-direction:column;
+    text-align:center;
+    }
+    #overlay h1{
+    font-size:2.4rem;
+    margin:0 0 16px;
+    animation:glow 2s infinite alternate
+  }
+    @keyframes glow{
+    from{text-shadow:0 0 8px #0ff}
+    to{text-shadow:0 0 20px #0ff}
+  }
+    #startBtn{
+    background:var(--accent);
+    color:#000;
+    border:none;
+    padding:12px 26px;
+    border-radius:8px;
+    font-size:1.1rem;
+    cursor:pointer
+  }
+
+   button {
+      background: #0ff;
+      border: none;
+      padding: 6px 14px;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 6px;
+      margin: 5px;
+    }
+    footer{
+    background:var(--panel);
+    padding:12px;
+    text-align:center;
+    color:#bbb
+  }
+    @media (max-width:640px){
+      #overlay h1{font-size:1.6rem}
+      #startBtn{padding:10px 18px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Pong Evolution – Pontos: <span id="score">0</span> | Recorde: <span id="highscore">0</span>
+      <button id="musicBtn">🎵 Música</button>
+      <button id="fsBtn">⛶ Tela Cheia</button>
+      <button id="resetBtn" title="Zerar recorde">🔁 Zer. Recorde</button>
+      <button onclick="window.location.href='index.html'">🏠 Voltar</button>
+  </header>
+
+  <div id="gameWrapper">
+    <div id="overlay">
+      <h1>🏓 Pong Evolution</h1>
+      <button id="startBtn">▶ Iniciar Jogo</button>
+    </div>
+
+    <canvas id="gameCanvas" width="600" height="400" aria-label="Área do Pong"></canvas>
+  </div>
+
+  <footer>© 2025 Games On-Line. Todos os direitos reservados.</footer>
+
+  <audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
+
+  <script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const overlay = document.getElementById('overlay');
+const startBtn = document.getElementById('startBtn');
+const musicBtn = document.getElementById('musicBtn');
+const fsBtn = document.getElementById('fsBtn');
+const resetBtn = document.getElementById('resetBtn');
+const scoreEl = document.getElementById('score');
+const highEl = document.getElementById('highscore');
+const bgMusic = document.getElementById('bgMusic');
+
+// 🔹 Ajusta canvas automaticamente à tela
+function resizeCanvas() {
+  canvas.width = Math.min(window.innerWidth, 800);
+  canvas.height = Math.min(window.innerHeight - 120, 600);
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// Estado e objetos
+let player = { x: 20, y: canvas.height / 2 - 40, w: 10, h: 80, dy: 0, speed: 6 };
+let ai = { x: canvas.width - 30, y: canvas.height / 2 - 40, w: 10, h: 80, speed: 3.4 };
+let ball = { x: canvas.width / 2, y: canvas.height / 2, size: 10, dx: 5, dy: 3 };
+
+let score = 0;
+let running = false;
+let rafId = null;
+
+// Highscore
+let raw = localStorage.getItem('pongHighscore');
+let highscore = raw && !isNaN(parseInt(raw)) ? parseInt(raw) : 0;
+highEl.textContent = highscore;
+scoreEl.textContent = score;
+
+// Funções de desenho
+function drawRect(x, y, w, h, color) { ctx.fillStyle = color; ctx.fillRect(x, y, w, h); }
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#222';
+  for (let i = 0; i < canvas.height; i += 20) ctx.fillRect(canvas.width / 2 - 1, i, 2, 12);
+  drawRect(player.x, player.y, player.w, player.h, 'lime');
+  drawRect(ai.x, ai.y, ai.w, ai.h, 'red');
+  ctx.fillStyle = 'white';
+  ctx.fillRect(ball.x, ball.y, ball.size, ball.size);
+}
+
+// Funções utilitárias
+function rectsOverlap(ax, ay, aw, ah, bx, by, bw, bh) {
+  return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
+}
+
+function paddleHit(paddle) {
+  const paddleCenter = paddle.y + paddle.h / 2;
+  const ballCenter = ball.y + ball.size / 2;
+  const relative = (ballCenter - paddleCenter) / (paddle.h / 2);
+  const maxBounce = 6;
+  ball.dy = relative * maxBounce;
+  const speed = Math.max(4.5, Math.abs(ball.dx));
+  if (paddle === player) {
+    ball.dx = Math.abs(speed);
+    ball.x = player.x + player.w;
+  } else {
+    ball.dx = -Math.abs(speed);
+    ball.x = ai.x - ball.size;
+  }
+}
+
+function update() {
+  if (!running) return;
+
+  player.y += player.dy;
+  if (player.y < 0) player.y = 0;
+  if (player.y + player.h > canvas.height) player.y = canvas.height - player.h;
+
+  // IA
+  const aiCenter = ai.y + ai.h / 2;
+  const ballCenter = ball.y + ball.size / 2;
+  if (ballCenter < aiCenter - 6) ai.y -= ai.speed;
+  else if (ballCenter > aiCenter + 6) ai.y += ai.speed;
+  ai.y = Math.max(0, Math.min(ai.y, canvas.height - ai.h));
+
+  // bola
+  ball.x += ball.dx;
+  ball.y += ball.dy;
+
+  if (ball.y <= 0 || ball.y + ball.size >= canvas.height) ball.dy *= -1;
+
+  // colisões
+  if (rectsOverlap(ball.x, ball.y, ball.size, ball.size, player.x, player.y, player.w, player.h) && ball.dx < 0)
+    paddleHit(player);
+  if (rectsOverlap(ball.x, ball.y, ball.size, ball.size, ai.x, ai.y, ai.w, ai.h) && ball.dx > 0)
+    paddleHit(ai);
+
+  // pontos
+  if (ball.x + ball.size < 0) {
+    score = 0;
+    updateScoreDisplay();
+    resetBall();
+  }
+  if (ball.x > canvas.width) {
+    score++;
+    if (score > highscore) {
+      highscore = score;
+      localStorage.setItem('pongHighscore', String(highscore));
+    }
+    updateScoreDisplay();
+    resetBall();
+  }
+
+  draw();
+  rafId = requestAnimationFrame(update);
+}
+
+function updateScoreDisplay() {
+  scoreEl.textContent = score;
+  highEl.textContent = highscore;
+}
+
+function resetBall() {
+  ball.x = canvas.width / 2 - ball.size / 2;
+  ball.y = canvas.height / 2 - ball.size / 2;
+  ball.dx = (Math.random() > 0.5 ? 1 : -1) * 5;
+  ball.dy = Math.random() * 4 - 2;
+}
+
+// Controles teclado
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowUp' || e.key === 'w') player.dy = -player.speed;
+  if (e.key === 'ArrowDown' || e.key === 's') player.dy = player.speed;
+  if (e.key.toLowerCase() === 'p') togglePause();
+});
+document.addEventListener('keyup', e => {
+  if (['ArrowUp', 'w'].includes(e.key) && player.dy < 0) player.dy = 0;
+  if (['ArrowDown', 's'].includes(e.key) && player.dy > 0) player.dy = 0;
+});
+
+// Controles mobile
+const touchControls = document.createElement("div");
+touchControls.innerHTML = `
+  <div style="position:absolute;bottom:25px;left:50%;transform:translateX(-50%);display:flex;gap:20px;z-index:10;">
+    <button id="upBtn">⬆</button>
+    <button id="downBtn">⬇</button>
+  </div>`;
+document.body.appendChild(touchControls);
+
+document.getElementById('upBtn').addEventListener('touchstart', () => player.dy = -player.speed);
+document.getElementById('upBtn').addEventListener('touchend', () => player.dy = 0);
+document.getElementById('downBtn').addEventListener('touchstart', () => player.dy = player.speed);
+document.getElementById('downBtn').addEventListener('touchend', () => player.dy = 0);
+
+// UI
+function startGame() {
+  overlay.style.display = 'none';
+  running = true;
+  resetBall();
+  score = 0;
+  updateScoreDisplay();
+  try { bgMusic.play().catch(()=>{}); } catch(e){}
+  if (!rafId) update();
+}
+
+function togglePause() {
+  running = !running;
+  if (running) {
+    overlay.style.display = 'none';
+    if (!rafId) update();
+  } else {
+    overlay.style.display = 'flex';
+    overlay.querySelector('h1').textContent = '⏸️ Pausado';
+  }
+}
+
+startBtn.addEventListener('click', startGame);
+musicBtn.addEventListener('click', ()=> bgMusic.paused ? bgMusic.play() : bgMusic.pause());
+fsBtn.addEventListener('click', ()=> {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+  else document.exitFullscreen();
+});
+resetBtn.addEventListener('click', ()=>{
+  localStorage.removeItem('pongHighscore');
+  highscore = 0;
+  updateScoreDisplay();
+  alert('Recorde zerado.');
+});
+
+updateScoreDisplay();
+resetBall();
+</script>
+
+</body>
+</html>
