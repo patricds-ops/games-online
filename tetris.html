@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Tetris Evolution</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890693169488330" crossorigin="anonymous"></script>
   <style>
     body {
       margin: 0;
@@ -113,263 +114,189 @@
   <audio id="dieSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
   <audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" loop></audio>
 
-<script>
-  // ==== início do script Tetris (ajustes mínimos para mobile) ====
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-  const canvas = document.getElementById("gameCanvas");
-  const ctx = canvas.getContext("2d");
+    const startBtn = document.getElementById("startBtn");
+    const overlay = document.getElementById("overlay");
+    const pauseOverlay = document.getElementById("pauseOverlay");
+    const scoreEl = document.getElementById("score");
+    const highscoreEl = document.getElementById("highscore");
+    const musicBtn = document.getElementById("musicBtn");
+    const fsBtn = document.getElementById("fsBtn");
 
-  const startBtn = document.getElementById("startBtn");
-  const overlay = document.getElementById("overlay");
-  const pauseOverlay = document.getElementById("pauseOverlay");
-  const scoreEl = document.getElementById("score");
-  const highscoreEl = document.getElementById("highscore");
-  const musicBtn = document.getElementById("musicBtn");
-  const fsBtn = document.getElementById("fsBtn");
+    const lineSound = document.getElementById("lineSound");
+    const dieSound = document.getElementById("dieSound");
+    const bgMusic = document.getElementById("bgMusic");
 
-  const lineSound = document.getElementById("lineSound");
-  const dieSound = document.getElementById("dieSound");
-  const bgMusic = document.getElementById("bgMusic");
+    const COLS = 10, ROWS = 20, BLOCK = 24; // tamanho menor
+    canvas.width = COLS * BLOCK;
+    canvas.height = ROWS * BLOCK;
 
-  const COLS = 10, ROWS = 20, BLOCK = 24; // grade lógica (não alterei)
-  // internal drawing scale (para caber em telas pequenas)
-  let scale = 1;
+    const COLORS = ["cyan","blue","orange","yellow","green","purple","red"];
+    const SHAPES = [
+      [[1,1,1,1]], // I
+      [[2,2,2],[0,0,2]], // J
+      [[3,3,3],[3,0,0]], // L
+      [[4,4],[4,4]], // O
+      [[0,5,5],[5,5,0]], // S
+      [[0,6,0],[6,6,6]], // T
+      [[7,7,0],[0,7,7]]  // Z
+    ];
 
-  // defina inicialmente canvas para matriz lógica (em pixels)
-  canvas.width = COLS * BLOCK;
-  canvas.height = ROWS * BLOCK;
+    let board, piece, score=0, gameInterval, paused=false;   
 
-  const COLORS = ["cyan","blue","orange","yellow","green","purple","red"];
-  const SHAPES = [
-    [[1,1,1,1]], // I
-    [[2,2,2],[0,0,2]], // J
-    [[3,3,3],[3,0,0]], // L
-    [[4,4],[4,4]], // O
-    [[0,5,5],[5,5,0]], // S
-    [[0,6,0],[6,6,6]], // T
-    [[7,7,0],[0,7,7]]  // Z
-  ];
+    function resetBoard() {
+      board = Array.from({length: ROWS},()=>Array(COLS).fill(0));
+    }
 
-  let board, piece, score=0, gameInterval, paused=false;
-
-  // ====== Ajuste visual / responsivo (apenas visual: mantém lógica da grade) ======
-  function adjustVisualScale() {
-    // queremos que o canvas ocupe até 90% da largura do visor e até 72% da altura
-    const maxVisualW = Math.min(window.innerWidth * 0.90, COLS * BLOCK);
-    const maxVisualH = Math.min(window.innerHeight * 0.72, ROWS * BLOCK);
-    scale = Math.min(maxVisualW / (COLS * BLOCK), maxVisualH / (ROWS * BLOCK), 1);
-    // aplicar tamanho CSS visual ao canvas (não altera a resolução lógica)
-    canvas.style.width = Math.floor(COLS * BLOCK * scale) + "px";
-    canvas.style.height = Math.floor(ROWS * BLOCK * scale) + "px";
-  }
-  window.addEventListener("resize", adjustVisualScale);
-  adjustVisualScale();
-
-  // ====== funções originais, agora usando scale no desenho apenas ======
-  function resetBoard() {
-    board = Array.from({length: ROWS},()=>Array(COLS).fill(0));
-  }
-
-  function drawBoard() {
-    // desenhar usando a resolução lógica (canvas.width/height) e CSS escala aplica zoom visual
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    for(let r=0;r<ROWS;r++){
-      for(let c=0;c<COLS;c++){
-        if(board[r][c]) {
-          ctx.fillStyle = COLORS[board[r][c]-1];
-          ctx.fillRect(c*BLOCK, r*BLOCK, BLOCK, BLOCK);
-          ctx.strokeStyle="#111";
-          ctx.strokeRect(c*BLOCK, r*BLOCK, BLOCK, BLOCK);
+    function drawBoard() {
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      for(let r=0;r<ROWS;r++){
+        for(let c=0;c<COLS;c++){
+          if(board[r][c]) {
+            ctx.fillStyle = COLORS[board[r][c]-1];
+            ctx.fillRect(c*BLOCK,r*BLOCK,BLOCK,BLOCK);
+            ctx.strokeStyle="#111";
+            ctx.strokeRect(c*BLOCK,r*BLOCK,BLOCK,BLOCK);
+          }
         }
       }
     }
-  }
 
-  function newPiece() {
-    const id = Math.floor(Math.random()*SHAPES.length);
-    piece = {
-      shape: SHAPES[id],
-      color: COLORS[id],
-      x: Math.floor(COLS/2)-1,
-      y: 0
-    };
-  }
+    function newPiece() {
+      const id = Math.floor(Math.random()*SHAPES.length);
+      piece = {
+        shape: SHAPES[id],
+        color: COLORS[id],
+        x: Math.floor(COLS/2)-1,
+        y: 0
+      };
+    }
 
-  function drawPiece() {
-    if (!piece) return;
-    piece.shape.forEach((row,y)=>{
-      row.forEach((val,x)=>{
-        if(val){
-          ctx.fillStyle=piece.color;
-          ctx.fillRect((piece.x+x)*BLOCK,(piece.y+y)*BLOCK,BLOCK,BLOCK);
-          ctx.strokeStyle="#111";
-          ctx.strokeRect((piece.x+x)*BLOCK,(piece.y+y)*BLOCK,BLOCK,BLOCK);
-        }
+
+    function drawPiece() {
+      piece.shape.forEach((row,y)=>{
+        row.forEach((val,x)=>{
+          if(val){
+            ctx.fillStyle=piece.color;
+            ctx.fillRect((piece.x+x)*BLOCK,(piece.y+y)*BLOCK,BLOCK,BLOCK);
+            ctx.strokeStyle="#111";
+            ctx.strokeRect((piece.x+x)*BLOCK,(piece.y+y)*BLOCK,BLOCK,BLOCK);
+          }
+        });
       });
-    });
-  }
+    }
 
-  function collides(x,y,shape){
-    for(let r=0;r<shape.length;r++){
-      for(let c=0;c<shape[r].length;c++){
-        if(shape[r][c]){
-          let nx=piece.x+c+x;
-          let ny=piece.y+r+y;
-          if(nx<0||nx>=COLS||ny>=ROWS||board[ny]?.[nx]) return true;
+    function collides(x,y,shape){
+      for(let r=0;r<shape.length;r++){
+        for(let c=0;c<shape[r].length;c++){
+          if(shape[r][c]){
+            let nx=piece.x+c+x;
+            let ny=piece.y+r+y;
+            if(nx<0||nx>=COLS||ny>=ROWS||board[ny]?.[nx]) return true;
+          }
         }
       }
+      return false;
     }
-    return false;
-  }
 
-  function merge(){
-    piece.shape.forEach((row,y)=>{
-      row.forEach((val,x)=>{
-        if(val){
-          board[piece.y+y][piece.x+x]=COLORS.indexOf(piece.color)+1;
-        }
+    function merge(){
+      piece.shape.forEach((row,y)=>{
+        row.forEach((val,x)=>{
+          if(val){
+            board[piece.y+y][piece.x+x]=COLORS.indexOf(piece.color)+1;
+          }
+        });
       });
-    });
-  }
+    }
 
-  function clearLines(){
-    for(let r=ROWS-1;r>=0;r--){
-      if(board[r].every(v=>v)){
-        board.splice(r,1);
-        board.unshift(Array(COLS).fill(0));
-        score+=100;
-        // tocar som em try/catch (alguns browsers bloqueiam)
-        try { lineSound.currentTime = 0; lineSound.play(); } catch(e){}
-        r++;
+    function clearLines(){
+      for(let r=ROWS-1;r>=0;r--){
+        if(board[r].every(v=>v)){
+          board.splice(r,1);
+          board.unshift(Array(COLS).fill(0));
+          score+=100;
+          lineSound.play();
+          r++;
+        }
       }
     }
-  }
 
-  function drop(){
-    if(!collides(0,1,piece.shape)){
-      piece.y++;
-    } else {
-      merge();
-      clearLines();
+    function drop(){
+      if(!collides(0,1,piece.shape)){
+        piece.y++;
+      } else {
+        merge();
+        clearLines();
+        newPiece();
+        if(collides(0,0,piece.shape)){
+          dieSound.play();
+          overlay.innerHTML=`<h1>Game Over</h1><button onclick="restart()">🔄 Reiniciar</button>`;
+          overlay.style.display="flex";
+          clearInterval(gameInterval);
+        }
+      }
+    }
+
+    function update(){
+      if(paused) return;
+      drop();
+      drawBoard();
+      drawPiece();
+      scoreEl.textContent=score;
+    }
+
+    function restart(){
+      score=0;
+      resetBoard();
       newPiece();
-      if(collides(0,0,piece.shape)){
-        try { dieSound.currentTime = 0; dieSound.play(); } catch(e){}
-        overlay.innerHTML=`<h1>Game Over</h1><button onclick="restart()">🔄 Reiniciar</button>`;
-        overlay.style.display="flex";
-        clearInterval(gameInterval);
-      }
+      overlay.style.display="none";
+      gameInterval=setInterval(update,500);
     }
-  }
 
-  function update(){
-    if(paused) return;
-    drop();
-    drawBoard();
-    drawPiece();
-    scoreEl.textContent=score;
-  }
+    startBtn.onclick=()=>{
+      restart();
+      bgMusic.play();
+    }
 
-  function restart(){
-    score=0;
+    musicBtn.onclick=()=>{
+      if(bgMusic.paused) bgMusic.play(); else bgMusic.pause();
+    }
+
+    fsBtn.onclick=()=>{
+      if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+
+    document.addEventListener("keydown",e=>{
+      if(e.key==="ArrowLeft"&&!collides(-1,0,piece.shape)) piece.x--;
+      if(e.key==="ArrowRight"&&!collides(1,0,piece.shape)) piece.x++;
+      if(e.key==="ArrowDown") drop();
+      if(e.key==="ArrowUp"){ // rotacionar
+        const rotated=piece.shape[0].map((_,i)=>piece.shape.map(r=>r[i]).reverse());
+        if(!collides(0,0,rotated)) piece.shape=rotated;
+      }
+      if(e.key.toLowerCase()==="p"){
+        paused=!paused;
+        pauseOverlay.style.display=paused?"flex":"none";
+      }
+    });
+
     resetBoard();
-    newPiece();
-    overlay.style.display="none";
-    clearInterval(gameInterval);
-    gameInterval=setInterval(update,500);
-  }
 
-  // bind original start (mantenho igual)
-  startBtn.onclick=()=>{
-    restart();
-    // tentar tocar música apenas no gesto do usuário aqui
-    if (bgMusic) {
-      bgMusic.currentTime = 0;
-      bgMusic.play().catch(()=>{/* pode ser bloqueado; usuário pode tocar no canvas para desbloquear */});
-    }
-  }
+    function updateScore(points) {
+      score += points;
+      document.getElementById("score").innerText = score;
 
-  // manter comportamento original dos botões
-  musicBtn.onclick=()=>{
-    if(bgMusic.paused) bgMusic.play(); else bgMusic.pause();
-  }
-
-  fsBtn.onclick=()=>{
-    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
-    else document.exitFullscreen();
-  }
-
-  // teclado (mantive idêntico)
-  document.addEventListener("keydown",e=>{
-    if (!piece) return;
-    if(e.key==="ArrowLeft"&&!collides(-1,0,piece.shape)) piece.x--;
-    if(e.key==="ArrowRight"&&!collides(1,0,piece.shape)) piece.x++;
-    if(e.key==="ArrowDown") drop();
-    if(e.key==="ArrowUp"){ // rotacionar
-      const rotated=piece.shape[0].map((_,i)=>piece.shape.map(r=>r[i]).reverse());
-      if(!collides(0,0,rotated)) piece.shape=rotated;
-    }
-    if(e.key.toLowerCase()==="p"){
-      paused=!paused;
-      pauseOverlay.style.display=paused?"flex":"none";
-    }
-    // redesenha imediatamente após tecla
-    drawBoard();
-    drawPiece();
-  });
-
-  // ======= TOUCH: mapeia toque em canvas para Esquerda / Rotacionar / Direita =======
-  // usa coordenadas dentro do elemento visual (CSS size) para decidir zona
-  canvas.addEventListener("touchstart", function(ev){
-    // evita scroll ao jogar
-    ev.preventDefault();
-    if (!piece) {
-      // se jogo não iniciado, um toque pode desbloquear áudio no mobile
-      if (bgMusic && bgMusic.paused) {
-        try { bgMusic.play().catch(()=>{}); } catch(e){}
+      if (score > highscore) {
+        highscore = score;
+        localStorage.setItem("tetrisHighscore", highscore);
+        document.getElementById("highscore").innerText = highscore;
       }
-      return;
     }
-    const rect = canvas.getBoundingClientRect();
-    const t = ev.touches[0];
-    const x = t.clientX - rect.left;
-    const zone = rect.width / 3;
-    if (x < zone) {
-      // mover esquerda
-      if(!collides(-1,0,piece.shape)) piece.x--;
-    } else if (x > 2*zone) {
-      // mover direita
-      if(!collides(1,0,piece.shape)) piece.x++;
-    } else {
-      // centro -> rotacionar
-      const rotated = piece.shape[0].map((_,i)=>piece.shape.map(r=>r[i]).reverse());
-      if(!collides(0,0,rotated)) piece.shape = rotated;
-    }
-    drawBoard();
-    drawPiece();
-  }, {passive:false});
-
-  // ===== updateScore original (mantido) =====
-  function updateScore(points) {
-    score += points;
-    document.getElementById("score").innerText = score;
-
-    if (score > highscore) {
-      highscore = score;
-      localStorage.setItem("tetrisHighscore", highscore);
-      document.getElementById("highscore").innerText = highscore;
-    }
-  }
-
-  // inicia board visual
-  resetBoard();
-  drawBoard();
-
-  // garantir escala inicial (usuário pode rotacionar dispositivo)
-  adjustVisualScale();
-
-  // ==== fim do script ====
-</script>
-
+  </script>
 </body>
 </html>
