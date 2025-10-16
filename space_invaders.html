@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Space Invaders Evolution</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890693169488330" crossorigin="anonymous"></script>
   <style>
     body {
       margin: 0;
@@ -115,250 +116,228 @@
   <audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" loop></audio>
 
   <script>
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-const overlay = document.getElementById("overlay");
-const startBtn = document.getElementById("startBtn");
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-const scoreEl = document.getElementById("score");
-const highscoreEl = document.getElementById("highscore");
-const levelEl = document.getElementById("level");
-const livesEl = document.getElementById("lives");
+    const overlay = document.getElementById("overlay");
+    const startBtn = document.getElementById("startBtn");
 
-const musicBtn = document.getElementById("musicBtn");
-const fsBtn = document.getElementById("fsBtn");
+    const scoreEl = document.getElementById("score");
+    const highscoreEl = document.getElementById("highscore");
+    const levelEl = document.getElementById("level");
+    const livesEl = document.getElementById("lives");
 
-const shootSound = document.getElementById("shootSound");
-const dieSound = document.getElementById("dieSound");
-const bgMusic = document.getElementById("bgMusic");
+    const musicBtn = document.getElementById("musicBtn");
+    const fsBtn = document.getElementById("fsBtn");
 
-let player, bullets, enemies, enemyBullets;
-let score = 0, highscore = 0, level = 1, lives = 3;
-let gameInterval, enemyShootInterval;
+    const shootSound = document.getElementById("shootSound");
+    const dieSound = document.getElementById("dieSound");
+    const bgMusic = document.getElementById("bgMusic");
 
-// 🔹 Ajusta o tamanho do canvas conforme a tela
-function resizeCanvas() {
-  canvas.width = Math.min(window.innerWidth, 800);
-  canvas.height = Math.min(window.innerHeight - 120, 600);
-}
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
+    let player, bullets, enemies, enemyBullets;
+    let score = 0, highscore = 0, level = 1, lives = 3;
+    let gameInterval, enemyShootInterval;
 
-function initGame() {
-  player = { x: canvas.width/2 - 20, y: canvas.height - 50, width: 40, height: 20, speed: 6 };
-  bullets = [];
-  enemies = [];
-  enemyBullets = [];
-  spawnEnemies();
-  updateHUD();
-}
-
-function spawnEnemies() {
-  enemies = [];
-  enemyBullets = [];
-  let rows = 2 + Math.floor(level/2);
-  let cols = 6 + Math.floor(level/3);
-  let spacing = Math.min(50, canvas.width / (cols + 1));
-  for (let r=0; r<rows; r++) {
-    for (let c=0; c<cols; c++) {
-      enemies.push({
-        x: 40 + c*spacing,
-        y: 40 + r*spacing,
-        width: 28, height: 20,
-        dx: Math.random() < 0.5 ? 1 : -1,
-        dy: 0.2 + Math.random()*0.3,
-        life: 1
-      });
+    function initGame() {
+      player = { x: canvas.width/2 - 20, y: canvas.height - 40, width: 40, height: 20, speed: 6 };
+      bullets = [];
+      enemies = [];
+      enemyBullets = [];
+      spawnEnemies();
+      updateHUD();
     }
-  }
-  if (level % 5 === 0) {
-    let bossLife = 20 * (level / 5);
-    enemies.push({ 
-      x: canvas.width/2 - 50, 
-      y: 60, 
-      width: 100, height: 60, boss: true, 
-      dx: 2, dy: 0.5, life: bossLife
-    });
-  }
-}
 
-function updateHUD() {
-  scoreEl.textContent = score;
-  highscoreEl.textContent = highscore;
-  levelEl.textContent = level;
-  livesEl.textContent = lives;
-}
-
-function update() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  // Jogador
-  ctx.fillStyle = "lime";
-  ctx.fillRect(player.x, player.y, player.width, player.height);
-
-  // Balas do jogador
-  bullets.forEach((b,i)=>{
-    b.y -= 6;
-    ctx.fillStyle = "white";
-    ctx.fillRect(b.x, b.y, 4, 10);
-    if (b.y < 0) bullets.splice(i,1);
-  });
-
-  // Inimigos
-  enemies.forEach((e,i)=>{
-    e.x += e.dx;
-    e.y += e.dy * 0.3;
-    if (e.x < 0 || e.x + e.width > canvas.width) e.dx *= -1;
-    ctx.fillStyle = e.boss ? "red" : "yellow";
-    ctx.fillRect(e.x, e.y, e.width, e.height);
-    if (checkCollision(player, e)) playerHit();
-  });
-
-  // Balas inimigas
-  enemyBullets.forEach((b,i)=>{
-    b.y += 4;
-    ctx.fillStyle = "red";
-    ctx.fillRect(b.x,b.y,4,10);
-    if (b.y > canvas.height) enemyBullets.splice(i,1);
-    if (checkCollision(player, b)) {
-      enemyBullets.splice(i,1);
-      playerHit();
-    }
-  });
-
-  // Colisão balas do player
-  bullets.forEach((b,bi)=>{
-    enemies.forEach((e,ei)=>{
-      if (checkCollision(b,e)) {
-        bullets.splice(bi,1);
-        e.life--;
-        if (e.life <= 0) {
-          enemies.splice(ei,1);
-          score += e.boss ? 50 : 10;
-          if (score > highscore) highscore = score;
+    function spawnEnemies() {
+      enemies = [];
+      enemyBullets = []; // limpa tiros antigos
+      let rows = 2 + Math.floor(level/2);
+      let cols = 6 + Math.floor(level/3);
+      let spacing = 50;
+      for (let r=0; r<rows; r++) {
+        for (let c=0; c<cols; c++) {
+          enemies.push({
+            x: 60 + c*spacing,
+            y: 40 + r*spacing,
+            width: 30, height: 20,
+            dx: Math.random() < 0.5 ? 1 : -1,
+            dy: 0.2 + Math.random()*0.3,
+            life: 1
+          });
         }
       }
-    });
-  });
-
-  if (enemies.length === 0) nextLevel();
-  updateHUD();
-}
-
-function nextLevel() {
-  level++;
-  if (level > 25) {
-    overlay.innerHTML = `<h1>🎉 Você Venceu!</h1>
-    <p>Pontuação: ${score}</p>
-    <button onclick="restart()">▶ Jogar Novamente</button>`;
-    overlay.style.display = "flex";
-    clearInterval(gameInterval);
-    clearInterval(enemyShootInterval);
-    return;
-  }
-  spawnEnemies();
-}
-
-function checkCollision(a,b) {
-  return (a.x < b.x+b.width && a.x+a.width > b.x && a.y < b.y+b.height && a.y+a.height > b.y);
-}
-
-function playerHit() {
-  lives--;
-  updateHUD();
-  if (lives <= 0) {
-    dieSound.play();
-    overlay.innerHTML = `<h1>💀 Game Over</h1>
-    <p>Pontuação: ${score}</p>
-    <button onclick="restart()">🔄 Reiniciar</button>`;
-    overlay.style.display = "flex";
-    clearInterval(gameInterval);
-    clearInterval(enemyShootInterval);
-  }
-}
-
-function restart() {
-  score = 0;
-  level = 1;
-  lives = 3;
-  overlay.style.display = "none";
-  initGame();
-  gameInterval = setInterval(update, 30);
-  enemyShootInterval = setInterval(enemyShoot, 800);
-}
-
-function enemyShoot() {
-  if (enemies.length > 0) {
-    let shooters = Math.min(5, enemies.length);
-    for (let i = 0; i < shooters; i++) {
-      let e = enemies[Math.floor(Math.random()*enemies.length)];
-      enemyBullets.push({x: e.x+e.width/2, y: e.y+e.height, width:4, height:10});
+      // Boss
+      if (level % 5 === 0) {
+        let bossLife = 20 * (level / 5);
+        enemies.push({ 
+          x: canvas.width/2 - 50, 
+          y: 60, 
+          width: 100, 
+          height: 60, 
+          boss: true, 
+          dx: 2, 
+          dy: 0.5,
+          life: bossLife
+        });
+      }
     }
-  }
-}
 
-// Controles de teclado
-let keys = {};
-document.addEventListener("keydown", e => { keys[e.key] = true; });
-document.addEventListener("keyup", e => { keys[e.key] = false; });
-
-function handlePlayerMovement() {
-  if (keys["ArrowLeft"] && player.x > 0) player.x -= player.speed;
-  if (keys["ArrowRight"] && player.x + player.width < canvas.width) player.x += player.speed;
-  if (keys[" "]) {
-    if (!keys.shooting) {
-      bullets.push({x: player.x+player.width/2-2, y: player.y, width:4, height:10});
-      shootSound.play();
-      keys.shooting = true;
+    function updateHUD() {
+      scoreEl.textContent = score;
+      highscoreEl.textContent = highscore;
+      levelEl.textContent = level;
+      livesEl.textContent = lives;
     }
-  } else {
-    keys.shooting = false;
-  }
-}
-setInterval(handlePlayerMovement, 20);
 
-// Botões de interface
-startBtn.onclick = () => {
-  overlay.style.display = "none";
-  initGame();
-  gameInterval = setInterval(update, 30);
-  enemyShootInterval = setInterval(enemyShoot, 800);
-  bgMusic.play();
-};
+    function update() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
 
-musicBtn.onclick = () => {
-  if (bgMusic.paused) bgMusic.play(); else bgMusic.pause();
-};
+      // Player
+      ctx.fillStyle = "lime";
+      ctx.fillRect(player.x, player.y, player.width, player.height);
 
-fsBtn.onclick = () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen();
-  } else {
-    document.exitFullscreen();
-  }
-};
+      // Balas do player
+      bullets.forEach((b,i)=>{
+        b.y -= 6;
+        ctx.fillStyle = "white";
+        ctx.fillRect(b.x, b.y, 4, 10);
+        if (b.y < 0) bullets.splice(i,1);
+      });
 
-// 🔹 Controles de toque (mobile)
-const touchControls = document.createElement("div");
-touchControls.innerHTML = `
-  <div style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:20px;z-index:10;">
-    <button id="leftBtn">⬅</button>
-    <button id="shootBtn">🔥</button>
-    <button id="rightBtn">➡</button>
-  </div>
-`;
-document.body.appendChild(touchControls);
+      // Inimigos
+      enemies.forEach((e,i)=>{
+        e.x += e.dx;
+        e.y += e.dy * 0.3;
+        if (e.x < 0 || e.x + e.width > canvas.width) e.dx *= -1;
 
-document.getElementById("leftBtn").addEventListener("touchstart",()=>keys["ArrowLeft"]=true);
-document.getElementById("leftBtn").addEventListener("touchend",()=>keys["ArrowLeft"]=false);
-document.getElementById("rightBtn").addEventListener("touchstart",()=>keys["ArrowRight"]=true);
-document.getElementById("rightBtn").addEventListener("touchend",()=>keys["ArrowRight"]=false);
-document.getElementById("shootBtn").addEventListener("touchstart",()=>{
-  bullets.push({x: player.x+player.width/2-2, y: player.y, width:4, height:10});
-  shootSound.play();
-});
-</script>
+        ctx.fillStyle = e.boss ? "red" : "yellow";
+        ctx.fillRect(e.x, e.y, e.width, e.height);
 
+        if (checkCollision(player, e)) playerHit();
+      });
 
+      // Balas inimigas
+      enemyBullets.forEach((b,i)=>{
+        b.y += 4;
+        ctx.fillStyle = "red";
+        ctx.fillRect(b.x,b.y,4,10);
+        if (b.y > canvas.height) enemyBullets.splice(i,1);
+        if (checkCollision(player, b)) {
+          enemyBullets.splice(i,1);
+          playerHit();
+        }
+      });
+
+      // Colisão balas do player
+      bullets.forEach((b,bi)=>{
+        enemies.forEach((e,ei)=>{
+          if (checkCollision(b,e)) {
+            bullets.splice(bi,1);
+            e.life--;
+            if (e.life <= 0) {
+              enemies.splice(ei,1);
+              score += e.boss ? 50 : 10;
+              if (score > highscore) highscore = score;
+            }
+          }
+        });
+      });
+
+      if (enemies.length === 0) nextLevel();
+      updateHUD();
+    }
+
+    function nextLevel() {
+      level++;
+      if (level > 25) {
+        overlay.innerHTML = `<h1>🎉 Você Venceu!</h1>
+        <p>Pontuação: ${score}</p>
+        <button onclick="restart()">▶ Jogar Novamente</button>`;
+        overlay.style.display = "flex";
+        clearInterval(gameInterval);
+        clearInterval(enemyShootInterval);
+        return;
+      }
+      spawnEnemies();
+    }
+
+    function checkCollision(a,b) {
+      return (a.x < b.x+b.width && a.x+a.width > b.x && a.y < b.y+b.height && a.y+a.height > b.y);
+    }
+
+    function playerHit() {
+      lives--;
+      updateHUD();
+      if (lives <= 0) {
+        dieSound.play();
+        overlay.innerHTML = `<h1>💀 Game Over</h1>
+        <p>Pontuação: ${score}</p>
+        <button onclick="restart()">🔄 Reiniciar</button>`;
+        overlay.style.display = "flex";
+        clearInterval(gameInterval);
+        clearInterval(enemyShootInterval);
+      }
+    }
+
+    function restart() {
+      score = 0;
+      level = 1;
+      lives = 3;
+      overlay.style.display = "none";
+      initGame();
+      gameInterval = setInterval(update, 30);
+      enemyShootInterval = setInterval(enemyShoot, 800);
+    }
+
+    function enemyShoot() {
+      if (enemies.length > 0) {
+        let shooters = Math.min(5, enemies.length);
+        for (let i = 0; i < shooters; i++) {
+          let e = enemies[Math.floor(Math.random()*enemies.length)];
+          enemyBullets.push({x: e.x+e.width/2, y: e.y+e.height, width:4, height:10});
+        }
+      }
+    }
+
+    // Controles
+    let keys = {};
+    document.addEventListener("keydown", e => { keys[e.key] = true; });
+    document.addEventListener("keyup", e => { keys[e.key] = false; });
+
+    function handlePlayerMovement() {
+      if (keys["ArrowLeft"] && player.x > 0) player.x -= player.speed;
+      if (keys["ArrowRight"] && player.x + player.width < canvas.width) player.x += player.speed;
+      if (keys[" "]) {
+        if (!keys.shooting) {
+          bullets.push({x: player.x+player.width/2-2, y: player.y, width:4, height:10});
+          shootSound.play();
+          keys.shooting = true;
+        }
+      } else {
+        keys.shooting = false;
+      }
+    }
+    setInterval(handlePlayerMovement, 20);
+
+    // Botões
+    startBtn.onclick = () => {
+      overlay.style.display = "none";
+      initGame();
+      gameInterval = setInterval(update, 30);
+      enemyShootInterval = setInterval(enemyShoot, 800);
+      bgMusic.play();
+    };
+
+    musicBtn.onclick = () => {
+      if (bgMusic.paused) bgMusic.play(); else bgMusic.pause();
+    };
+
+    fsBtn.onclick = () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    };
+  </script>
 </body>
 </html>
