@@ -1,203 +1,326 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Games On-Line</title>
-  <meta name="description" content="Games On-Line - Jogue Snake e outros jogos divertidos diretamente no navegador." />
-  <meta name="keywords" content="jogos online, snake, games, navegador, grátis" />
+  <meta charset="UTF-8">
+  <title>🎮 Games On-Line</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 🔍 SEO Avançado -->
+  <meta name="description" content="Jogue online Pac-Man, Snake, Pong, Space Invaders e Tetris de graça! Jogos clássicos de arcade direto no seu navegador.">
+  <meta name="keywords" content="jogos online, pac-man, pong, tetris, snake, space invaders, jogos clássicos, arcade, games gratuitos">
+  <meta name="author" content="Games On-Line">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0f0">
+
+  <!-- 🧭 Google Search Console (verificação) -->
+  <meta name="google-site-verification" content="SUA_CHAVE_DE_VERIFICACAO_AQUI" />
+
+  <!-- 📊 Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+  <!-- 💡 Dados Estruturados (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Games On-Line",
+    "url": "https://seudominio.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://seudominio.com/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    "description": "Jogue online Pac-Man, Snake, Pong, Space Invaders e Tetris de graça.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Games On-Line"
+    }
+  }
+  </script>
 
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890693169488330" crossorigin="anonymous"></script>
 
   <style>
-    :root{
-      --bg:#111;
-      --panel:#222;
-      --accent:lime;
-      --card:#1b1b1b;
-      --side-width:280px;
-      --gutter:20px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#fff}
-    header{
-      height:68px;
-      background:var(--panel);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:0 20px;
-      position:sticky;
-      top:0;
-      z-index:100;
-    }
-    header h1{margin:0;color:var(--accent);font-size:1.25rem}
-    header .right{display:flex;gap:12px;align-items:center}
-    header .right button{background:#333;color:#fff;border:none;padding:8px 10px;border-radius:6px;cursor:pointer}
-
-    /* Side banners (fixos) */
-    #left-side, #right-side{
-      position:fixed;
-      top:88px; /* header + small gap */
-      width:var(--side-width);
-      display:flex;
-      flex-direction:column;
-      gap:16px;
-      padding:8px;
-      z-index:50;
-    }
-    #left-side{left:20px}
-    #right-side{right:-30px}
-    .banner{
-      width:80%;
-      height:200px;
-      border-radius:20px;
-      overflow:hidden;
-      background:#000;
-      display:block;
-      box-shadow:0 6px 18px rgba(0,0,0,0.5);
-      transition:transform .16s;
-    }
-    .banner img{width:100%;height:100%;object-fit:cover;display:block}
-    .banner:hover{transform:translateY(-6px)}
-
-    /* Central area: leave space for sidebars */
-    main{
-      display:block;
-      padding: calc(88px + var(--gutter)) calc(var(--gutter) + var(--side-width) + 20px) calc(80px + var(--gutter)) calc(var(--gutter) + var(--side-width) + 20px);
-      min-height: calc(100vh - 88px - 80px);
-      /* the padding left/right accounts for sidebars */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    /* Cards grid */
-    .cards{
-      max-width:1200px;
-      margin:0 auto;
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap:18px;
-    }
-    .card{
-      background:var(--card);
-      border-radius:12px;
-      padding:12px;
-      text-align:center;
-      transition:transform .18s, box-shadow .18s;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.4);
-      cursor:pointer;
-      border:1px solid rgba(255,255,255,0.03);
-    }
-    .card:hover{transform:translateY(-6px);box-shadow:0 14px 36px rgba(0,0,0,0.6)}
-    .card img{width:100%;height:150px;object-fit:contain;border-radius:8px;display:block;margin-bottom:10px}
-    .card h3{margin:0;color:#fff;font-size:1.05rem}
-    .card p{margin:8px 0 0;color:#ddd;font-size:.9rem}
-
-    footer{
-      height:25px;
-      background:var(--panel);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#ccc;
-      position:sticky;
-      bottom:0;
-      margin-top:24px;
+    /* Cabeçalho fixo */
+    header {
+      background: #222;
+      text-align: center;
+      padding: 15px 10px;
+      font-size: 1.6em;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      border-bottom: 2px solid #0f0;
+      box-shadow: 0 0 20px rgba(0,255,0,0.3);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
     }
 
-    /* responsive: hide side banners on small screens and make padding simpler */
-    @media (max-width: 1000px){
-      #left-side,#right-side{display:none}
-      main{padding:calc(88px + var(--gutter)) 20px calc(80px + var(--gutter)) 20px}
+    header::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #0f0, transparent);
+      animation: neonLine 2s infinite linear;
     }
 
-    @media (max-width: 480px){
-      .card img{height:120px}
-      header h1{font-size:1rem}
+    @keyframes neonLine {
+      0% { transform: translateX(-100%); opacity: 0.3; }
+      50% { transform: translateX(0%); opacity: 1; }
+      100% { transform: translateX(100%); opacity: 0.3; }
     }
+
+    header span.title {
+      color: #0f0;
+      text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 40px #0f0, 0 0 80px #0f0;
+      animation: pulseNeon 3s infinite ease-in-out;
+      letter-spacing: 1px;
+      user-select: none;
+    }
+
+    @keyframes pulseNeon {
+      0%, 100% {
+        text-shadow: 0 0 5px #0f0, 0 0 15px #0f0, 0 0 30px #0f0, 0 0 60px #0f0;
+        transform: scale(1);
+      }
+      50% {
+        text-shadow: 0 0 20px #0f0, 0 0 40px #0f0, 0 0 80px #0f0, 0 0 120px #0f0;
+        transform: scale(1.03);
+      }
+    }
+
+    .adsense-top, .adsense-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+      padding: 10px 0;
+      border-bottom: 2px solid #0f0;
+      opacity: 0;
+      animation: fadeIn 2s forwards;
+    }
+
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      padding: 120px 25px 80px; /* Espaço p/ header e footer fixos */
+      justify-items: center;
+      align-items: center;
+    }
+
+    .game-card {
+      background: #000;
+      border: 2px solid #0f0;
+      border-radius: 14px;
+      overflow: hidden;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,255,0,0.2);
+      transition: transform 0.3s ease, box-shadow 0.4s ease;
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+      animation: appear 1s forwards;
+    }
+
+    @keyframes appear { to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    .game-card:hover {
+      transform: scale(1.07);
+      box-shadow: 0 0 35px rgba(0,255,0,0.6);
+    }
+
+    .game-card img {
+      width:100%;height:150px;object-fit:contain;border-radius:8px;display:block;margin-bottom:10px
+    }
+
+    .game-card h2 {
+      margin: 10px 0 5px;
+      color: #0f0;
+      font-size: 1.3em;
+      text-shadow: 0 0 8px #0f0;
+    }
+
+    .game-card p {
+      font-size: 0.9em;
+      color: #aaa;
+      margin-bottom: 10px;
+      padding: 0 10px;
+    }
+
+    .game-card button {
+      background: #0f0;
+      border: none;
+      color: #000;
+      padding: 8px 14px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 1em;
+    }
+
+    .game-card button:hover {
+      background: #3f3;
+      box-shadow: 0 0 10px #0f0;
+    }
+
+    .insert-coin {
+      color: #0f0;
+      font-family: "Press Start 2P", monospace;
+      font-size: 0.9em;
+      text-shadow: 0 0 5px #0f0, 0 0 15px #0f0;
+      animation: blinkCoin 1.2s infinite;
+      margin-bottom: 6px;
+    }
+
+    @keyframes blinkCoin {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0; }
+    }
+
+    /* Rodapé fixo */
+    footer {
+      background: #111;
+      text-align: center;
+      padding: 12px 8px;
+      font-size: 0.9em;
+      border-top: 2px solid #0f0;
+      box-shadow: 0 -2px 10px rgba(0,255,0,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    button {
+      background: #0f0;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1em;
+      transition: 0.3s;
+    }
+
+    button:hover { background: #3f3; }
   </style>
-  
-  <!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890693169488330" crossorigin="anonymous"></script>
-
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
+
 <body>
   <header>
-    <h1>Games On-Line</h1>
-    <div class="right">
-      <!-- sem login (apenas botões visuais) -->
-    </div>
+    <span class="title">🎮 Games On-Line</span>
   </header>
 
-  <!-- Left banners (fixos) -->
-  <div id="left-side" aria-hidden="false">
-    <a class="banner" href="https://go.hotmart.com/S60534663Q" target="_blank" rel="nofollow noopener">
-      <img src="https://i.imgur.com/zVlx6j4.png" width="100" height="100" alt="Afiliado 1">
-    </a>
-    <a class="banner" href="https://go.hotmart.com/S60534663Q" target="_blank" rel="nofollow noopener">
-      <img src="https://i.imgur.com/S9L8kDJ.png" width="100" height="100" alt="Afiliado 2">
-    </a>
+  <div class="adsense-top">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-6890693169488330"
+         data-ad-slot="9876543210"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
   </div>
 
-  <!-- Right banners (fixos) - se quiser outros links, substitua os href/src -->
-  <div id="right-side" aria-hidden="false">
-    <a class="banner" href="https://go.hotmart.com/S60534663Q" target="_blank" rel="nofollow noopener">
-      <img src="https://i.imgur.com/jQIVOOb.png" width="100" height="100" alt="Afiliado 4">
-    </a>
-    <a class="banner" href="https://go.hotmart.com/S60534663Q" target="_blank" rel="nofollow noopener">
-      <img src="https://i.imgur.com/qePUhEx.png" width="100" height="100" alt="Afiliado 5">
-    </a>
-  </div>
-
-  <!-- Main content -->
   <main>
-    <div class="cards" role="list">
-      <a class="card" href="pong.html" role="listitem" aria-label="Pong Evolution">
-        <img src="image/pong_evolution.png" alt="Pong Evolution">
-        <h3>Pong Evolution</h3>
-        <p>Jogue Agora</p>
-      </a>
-
-      <div class="cards" role="list">
-        <a class="card" href="space_invaders.html" role="listitem" aria-label="Space Invaders Evolution">
-        <img src="image/space_invaders_evolution.png" alt="Space Invaders Evolution">
-        <h3>Space Invaders Evolution</h3>
-        <p>Jogue Agora</p>
-      </a>
-      </div>
-
-      <div class="cards" role="list">
-        <a class="card" href="snake.html" role="listitem" aria-label="Snake Evolution">
-        <img src="image/snake_evolution.png" alt="Snake Evolution">
-        <h3>Snake Evolution</h3>
-        <p>Jogue Agora</p>
-        </a>
-      </div>
-
-       <div class="cards" role="list">
-        <a class="card" href="tetris.html" role="listitem" aria-label="Tetris Evolution">
-        <img src="image/tetris_evolution.png" alt="Tetris Evolution">
-        <h3>Tetris Evolution</h3>
-        <p>Jogue Agora</p>
-        </a>
-      </div>
-
-      <div class="card" role="listitem">
-        <img src="image/futuro.png" alt="Em breve">
-        <h3>Em breve</h3>
-        <p>Jogo 5 — em desenvolvimento.</p>
-        </div>
-
-      <div class="card" role="listitem">
-        <img src="image/futuro.png" alt="Em breve">
-        <h3>Em breve</h3>
-        <p>Jogo 6 — em desenvolvimento.</p>
-        </div>
-    </div>
+    <div class="game-card"><img src="image/pacman.png" alt="Pac-Man"><h2>Pac-Man</h2><p>Coma todas as bolinhas e fuja dos fantasmas nesse clássico imortal!</p><button class="playBtn" data-game="pacman.html">▶ Jogar</button></div>
+    <div class="game-card"><img src="image/pong.png" alt="Pong"><h2>Pong</h2><p>O duelo de raquetes que iniciou a era dos videogames!</p><button class="playBtn" data-game="pong.html">▶ Jogar</button></div>
+    <div class="game-card"><img src="image/snake.png" alt="Snake"><h2>Snake</h2><p>Controle a cobra e colete pontos para evoluir e bater recordes!</p><button class="playBtn" data-game="snake.html">▶ Jogar</button></div>
+    <div class="game-card"><img src="image/space_invaders.png" alt="Space Invaders"><h2>Space Invaders</h2><p>Defenda a Terra dos alienígenas e ganhe pontos eliminando as naves!</p><button class="playBtn" data-game="space.html">▶ Jogar</button></div>
+    <div class="game-card"><img src="image/tetris.png" alt="Tetris"><h2>Tetris</h2><p>Empilhe as peças e forme linhas perfeitas neste clássico dos puzzles!</p><button class="playBtn" data-game="tetris.html">▶ Jogar</button></div>
   </main>
 
-   <footer>
-    <p id="footerText">© 2025 Games On-Line. Todos os direitos reservados.</p>
+  <footer>
+    <div class="insert-coin">INSERT COIN</div>
+    © 2025 Games On-Line — Visitantes: <span id="visitors">0</span>
+    <div class="adsense-box">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-6890693169488330"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
   </footer>
+
+  <!-- Sons -->
+  <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2021/09/15/audio_f1c8df4761.mp3?filename=arcade-game-ambience-9826.mp3" loop></audio>
+  <audio id="clickSound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
+  <audio id="hoverSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+
+  <script>
+  const bgMusic = document.getElementById("bgMusic");
+  bgMusic.volume = 0.4;
+  bgMusic.play().catch(()=>{});
+
+  const clickSound = document.getElementById("clickSound");
+  const hoverSound = document.getElementById("hoverSound");
+  const playButtons = document.querySelectorAll(".playBtn");
+
+  const coinSound = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_9a31bfc44a.mp3?filename=coin-insert-102134.mp3");
+  coinSound.volume = 0.5;
+
+  playButtons.forEach(btn => {
+    btn.addEventListener("mouseenter", () => {
+      hoverSound.currentTime = 0;
+      hoverSound.play();
+    });
+
+    btn.addEventListener("click", () => {
+      coinSound.currentTime = 0;
+      coinSound.play();
+      clickSound.currentTime = 0;
+      clickSound.play();
+      setTimeout(() => window.location.href = btn.dataset.game, 700);
+    });
+  });
+
+  const visitorsEl = document.getElementById("visitors");
+  let visits = localStorage.getItem("visits");
+  visits = visits ? parseInt(visits)+1 : 1;
+  localStorage.setItem("visits", visits);
+  visitorsEl.textContent = visits.toLocaleString("pt-BR");
+  </script>
 </body>
 </html>
