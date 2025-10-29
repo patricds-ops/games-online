@@ -3,134 +3,223 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pong Evolution</title>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890693169488330" crossorigin="anonymous"></script>
-  <style>
-    :root{--bg:#111;--panel:#222;--accent:#0f0}
-    body{
-      margin: 0;
-      padding: 0;
-      background: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-    header{
-      text-align: center;
-      padding: 5px;
-      font-size: 1.2em;
-      font-weight: bold;
-      background: #222;
-    }
-    .title {
-       font-weight:700
-    }
-    .controls{
-    display:flex;
-    gap:8px;
-    align-items:center
-  }
-    header button{
-    background: #975;
-      border: none;
-      padding: 6px 14px;
-      font-size: 1em;
-      cursor: pointer;
-      border-radius: 6px;
-      margin: 5px;
-  }
-    #gameWrapper{
-    flex:1;display:flex;
-    align-items:center;
-    justify-content:center;
-    position:relative
-  }
-    canvas{
-    background:#000;
-    display:block;
-    border:3px solid #333;
-    max-width:100%;
-    height:auto
-  }
-    /* overlay central igual aos outros jogos */
-    #overlay{
-    position:absolute;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:rgba(0,0,0,0.8);
-    z-index:5;
-    flex-direction:column;
-    text-align:center;
-    }
-    #overlay h1{
-    font-size:2.4rem;
-    margin:0 0 16px;
-    animation:glow 2s infinite alternate
-  }
-    @keyframes glow{
-    from{text-shadow:0 0 8px #0ff}
-    to{text-shadow:0 0 20px #0ff}
-  }
-    #startBtn{
-    background:var(--accent);
-    color:#000;
-    border:none;
-    padding:12px 26px;
-    border-radius:8px;
-    font-size:1.1rem;
-    cursor:pointer
-  }
+  <title>🎮 Pong — Games On-Line</title>
 
-   button {
-      background: #0ff;
-      border: none;
-      padding: 6px 14px;
-      font-size: 1em;
-      cursor: pointer;
-      border-radius: 6px;
-      margin: 5px;
-    }
-    footer{
-    background:var(--panel);
-    padding:12px;
-    text-align:center;
-    color:#bbb
+  <!-- SEO Básico -->
+  <meta name="description" content="Jogue Pong grátis: duelo retrô de raquetes. Som arcade, fases (25), e recordes salvos localmente.">
+  <meta name="keywords" content="pong, jogos online, arcade, jogos grátis, jogos retrô">
+  <meta name="author" content="Games On-Line">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0f0">
+
+  <!-- Google Search Console (substitua pela sua chave se desejar) -->
+  <meta name="google-site-verification" content="SUA_CHAVE_DE_VERIFICACAO_AQUI" />
+
+  <!-- Google Analytics (mesmo ID do index.html) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="Pong — Games On-Line">
+  <meta property="og:description" content="Duelo retrô de raquetes. Jogue Pong grátis com som arcade, 25 fases e recordes locais.">
+  <meta property="og:image" content="https://seudominio.com/image/pong.png">
+  <meta property="og:url" content="https://seudominio.com/pong.html">
+  <meta property="og:type" content="game">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pong — Games On-Line">
+  <meta name="twitter:description" content="Duelo retrô de raquetes. Jogue Pong grátis com som arcade, 25 fases e recordes.">
+  <meta name="twitter:image" content="https://seudominio.com/image/pong.png">
+
+  <!-- JSON-LD (dados estruturados) -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"VideoGame",
+    "name":"Pong",
+    "url":"https://seudominio.com/pong.html",
+    "image":"https://seudominio.com/image/pong.png",
+    "description":"Pong clássico com som arcade, 25 fases e recordes locais.",
+    "publisher":{"@type":"Organization","name":"Games On-Line"},
+    "inLanguage":"pt-BR",
+    "genre":"Arcade"
   }
-    @media (max-width:640px){
-      #overlay h1{font-size:1.6rem}
-      #startBtn{padding:10px 18px}
+  </script>
+
+  <!-- Google AdSense (mesmo client do index.html) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890693169488330" crossorigin="anonymous"></script>
+
+  <style>
+    :root{--bg:#111;--panel:#222;--accent:#0f0;--muted:#9f9}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;padding:0;
+      background:var(--bg);
+      color:#fff;
+      font-family:Arial, sans-serif;
+      display:flex;flex-direction:column;
+      min-height:100vh;overflow:hidden;
+    }
+
+    /* Cabeçalho fixo */
+    header{
+      background:var(--panel);
+      padding:10px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      position:fixed;top:0;left:0;width:100%;z-index:1000;
+      border-bottom:2px solid rgba(0,255,0,0.08);
+    }
+    header .left{position:absolute; left:12px; display:flex; gap:8px; align-items:center; font-size:0.95rem}
+    header .title{font-weight:700; color:var(--accent)}
+    header .right{position:absolute; right:12px; display:flex; gap:8px; align-items:center}
+
+    /* Conteúdo central (canvas) */
+    #gameWrapper{
+      flex:1; display:flex; align-items:center; justify-content:center;
+      position:relative;
+      padding-top:72px;  /* espaço para header fixo */
+      padding-bottom:86px; /* espaço para footer fixo */
+      overflow:auto;
+    }
+
+    /* Canvas responsivo: dimensionamos por JS para manter clareza em DPR */
+    .canvas-outer{ display:flex; align-items:center; justify-content:center; padding:12px; width:100% }
+
+    canvas{
+      background:#000; border:3px solid #222; border-radius:6px;
+      display:block; max-width:100%; height:auto;
+      box-shadow: 0 0 30px rgba(0,255,0,0.04);
+    }
+
+    /* Overlay central */
+    #overlay{
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      background:rgba(0,0,0,0.72); z-index:6; flex-direction:column; text-align:center; gap:10px;
+    }
+    #overlay h1{font-size:2rem; margin:0; color:var(--accent); animation:glow 2s infinite alternate}
+    @keyframes glow{from{text-shadow:0 0 10px rgba(0,255,0,0.4)} to{text-shadow:0 0 28px rgba(0,255,0,0.9)}}
+    #startBtn{background:var(--accent); color:#000; border:none; padding:12px 26px; border-radius:8px; font-size:1rem; cursor:pointer}
+
+    /* Mobile controls (hidden on desktop) */
+    .mobile-controls{
+      position:fixed; left:50%; transform:translateX(-50%); bottom:96px; display:none;
+      gap:10px; z-index:1100;
+      pointer-events:none; /* enabled per-button */
+    }
+    .mobile-controls .btn{
+      pointer-events:auto;
+      width:72px; height:72px; border-radius:12px; border:none;
+      font-size:1.4rem; background:rgba(255,255,255,0.06); color:var(--accent);
+      display:flex; align-items:center; justify-content:center; backdrop-filter: blur(2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+      transition: transform 0.12s;
+      touch-action: none;
+    }
+    .mobile-controls .btn:active{ transform: scale(0.96) }
+
+    /* Footer fixo */
+    footer{
+      background:var(--panel);
+      padding:10px 12px;
+      text-align:center;
+      color:#bbb;
+      position:fixed; bottom:0; left:0; width:100%; z-index:1000;
+      display:flex; align-items:center; gap:12px; justify-content:center;
+      border-top:2px solid rgba(0,255,0,0.06);
+    }
+
+    /* Flash effects on canvas element */
+    .flash-green{ animation:flashGreen 0.35s ease }
+    @keyframes flashGreen {
+      0%{ box-shadow:0 0 0 #0f0; transform:scale(1) }
+      50%{ box-shadow:0 0 60px #0f0; transform:scale(1.03) }
+      100%{ box-shadow:0 0 0 #0f0; transform:scale(1) }
+    }
+    .flash-red{ animation:flashRed 0.35s ease }
+    @keyframes flashRed {
+      0%{ box-shadow:0 0 0 #f00; transform:scale(1) }
+      50%{ box-shadow:0 0 46px #f00; transform:scale(0.98) }
+      100%{ box-shadow:0 0 0 #f00; transform:scale(1) }
+    }
+
+    /* small utilities */
+    .sr-only{ position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0 }
+
+    /* responsive tweaks */
+    @media (max-width:800px){
+      header .left, header .right{ display:none } /* compact header on small screens */
+      #overlay h1{ font-size:1.4rem }
+      .mobile-controls{ display:flex } /* allow to be shown via JS when device is mobile */
     }
   </style>
 </head>
 <body>
   <header>
-    Pong Evolution – Pontos: <span id="score">0</span> | Recorde: <span id="highscore">0</span>
-      <button id="musicBtn">🎵 Música</button>
-      <button id="fsBtn">⛶ Tela Cheia</button>
-      <button id="resetBtn" title="Zerar recorde">🔁 Zer. Recorde</button>
-      <button onclick="window.location.href='index.html'">🏠 Voltar</button>
+    <div class="left">Pong — Pontos: <span id="score">0</span> | Recorde: <span id="highscore">0</span></div>
+    <div class="title">Pong</div>
+    <div class="right">
+      <button id="musicBtn" class="small" aria-label="Play Música">🎵</button>
+      <button id="fsBtn" class="small" aria-label="Tela Cheia">⛶</button>
+      <button id="resetBtn" class="small" title="Zerar recorde">🔁</button>
+      <button onclick="window.location.href='index.html'" class="small" aria-label="Voltar">🏠</button>
+    </div>
   </header>
 
-  <div id="gameWrapper">
-    <div id="overlay">
-      <h1>🏓 Pong Evolution</h1>
+  <main id="gameWrapper">
+    <div class="canvas-outer" role="main" aria-label="Área do jogo">
+      <canvas id="gameCanvas" width="900" height="540" aria-label="Canvas do Pong"></canvas>
+    </div>
+
+    <div id="overlay" aria-hidden="false">
+      <h1>🏓 Pong</h1>
+      <div style="color:#ccc">Use setas ↑ ↓ ou W / S no teclado — no celular use os botões</div>
+      <div style="color:var(--muted)">25 fases — dificuldade aumenta a cada 25 pontos</div>
       <button id="startBtn">▶ Iniciar Jogo</button>
     </div>
 
-    <canvas id="gameCanvas" width="600" height="400" aria-label="Área do Pong"></canvas>
-  </div>
+    <!-- Mobile controls (JS mostrará/esconderá conforme device) -->
+    <div class="mobile-controls" id="mobileControls" aria-hidden="true">
+      <button id="btnUp" class="btn" aria-label="Mover para cima">⬆️</button>
+      <button id="btnDown" class="btn" aria-label="Mover para baixo">⬇️</button>
+    </div>
+  </main>
 
-  <footer>© 2025 Games On-Line. Todos os direitos reservados.</footer>
+  <footer>
+    <div>© 2025 Games On-Line</div>
+    <div style="width:1px;height:20px;background:#333;margin:0 8px"></div>
+    <div>Visitantes: <span id="visitors">0</span></div>
 
-  <audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
+    <div style="flex:1"></div>
+
+    <!-- AdSense rodapé -->
+    <div style="max-width:320px">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-6890693169488330"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  </footer>
+
+  <!-- SONS -->
+  <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2021/09/15/audio_f1c8df4761.mp3?filename=arcade-game-ambience-9826.mp3" loop></audio>
+  <audio id="sndBounce" src="https://actions.google.com/sounds/v1/impacts/wood_plank_flicks.ogg"></audio>
+  <audio id="sndPoint" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9a31bfc44a.mp3?filename=coin-insert-102134.mp3"></audio>
+  <audio id="sndLose" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
 
   <script>
-    // elementos
+  (function(){
+    // Elements
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const overlay = document.getElementById('overlay');
@@ -140,182 +229,361 @@
     const resetBtn = document.getElementById('resetBtn');
     const scoreEl = document.getElementById('score');
     const highEl = document.getElementById('highscore');
+    const visitorsEl = document.getElementById('visitors');
+    const mobileControls = document.getElementById('mobileControls');
+    const btnUp = document.getElementById('btnUp');
+    const btnDown = document.getElementById('btnDown');
+
     const bgMusic = document.getElementById('bgMusic');
+    const sndBounce = document.getElementById('sndBounce');
+    const sndPoint = document.getElementById('sndPoint');
+    const sndLose = document.getElementById('sndLose');
 
-    // constantes e estado
-    const CANVAS_W = canvas.width;
-    const CANVAS_H = canvas.height;
-
-    const player = { x: 20, y: (CANVAS_H/2) - 40, w: 10, h: 80, dy: 0, speed: 6 };
-    const ai =     { x: CANVAS_W - 30, y: (CANVAS_H/2) - 40, w: 10, h: 80, speed: 3.4 };
-    const ball =   { x: CANVAS_W/2, y: CANVAS_H/2, size: 10, dx: 5, dy: 3 };
-
-    let score = 0;
-
-    // Lê e normaliza o highscore do localStorage: trata null/""/NaN
-    (function readHighscore(){
-      const raw = localStorage.getItem('pongHighscore');
-      // console.log('raw stored:', raw);
-      const parsed = parseInt(raw, 10);
-      if (raw === null || raw === undefined || raw === '' || Number.isNaN(parsed)) {
-        window.pongHighscore = 0;
-      } else {
-        window.pongHighscore = parsed;
-        if (!Number.isFinite(window.pongHighscore) || window.pongHighscore < 0) window.pongHighscore = 0;
-      }
-    })();
-
-    let highscore = window.pongHighscore;
-    highEl.textContent = highscore;
-    scoreEl.textContent = score;
-
-    let running = false;
-    let rafId = null;
-
-    // desenho
-    function drawRect(x,y,w,h,color){ ctx.fillStyle = color; ctx.fillRect(x,y,w,h); }
-    function draw(){
-      ctx.clearRect(0,0,CANVAS_W,CANVAS_H);
-      // linha central
-      ctx.fillStyle = '#222';
-      for(let i=0;i<CANVAS_H;i+=20) ctx.fillRect((CANVAS_W/2)-1, i, 2, 12);
-
-      drawRect(player.x, player.y, player.w, player.h, 'lime');
-      drawRect(ai.x, ai.y, ai.w, ai.h, 'red');
-      ctx.fillStyle = 'white';
-      ctx.fillRect(ball.x, ball.y, ball.size, ball.size);
+    // Device detection
+    const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || navigator.userAgent.toLowerCase().includes('android') || navigator.userAgent.toLowerCase().includes('iphone');
+    // we'll show mobile controls only if touch AND small viewport
+    function shouldShowMobileControls(){
+      return isTouch || window.innerWidth <= 760;
     }
 
+    // Responsive canvas sizing with DPR
+    const ASPECT = 900 / 540; // width / height base
+    function resizeCanvas(){
+      // compute available width (minus paddings)
+      const maxWidth = Math.min(1000, Math.max(320, window.innerWidth - 40));
+      // for tall mobile screens, limit height
+      const maxHeight = Math.min(900, window.innerHeight - 200);
+      let width = maxWidth;
+      let height = Math.round(width / ASPECT);
+      if (height > maxHeight){
+        height = maxHeight;
+        width = Math.round(height * ASPECT);
+      }
+      const dpr = window.devicePixelRatio || 1;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // scale drawing to CSS pixels
+    }
+
+    window.addEventListener('resize', ()=>{
+      resizeCanvas();
+      // hide/show mobile controls depending on device/size
+      mobileControls.style.display = shouldShowMobileControls() ? 'flex' : 'none';
+      mobileControls.setAttribute('aria-hidden', shouldShowMobileControls() ? 'false' : 'true');
+    });
+
+    // Game state (scaled to canvas CSS size for render math)
+    let CSS_W = 900, CSS_H = 540; // will map after resize
+    function mapCoordsFromCanvas(){
+      CSS_W = parseInt(canvas.style.width) || 900;
+      CSS_H = parseInt(canvas.style.height) || 540;
+    }
+
+    // Entities (will be scaled relative to CSS sizes)
+    const state = {
+      player: { xRatio: 18/900, yRatio: (270-45)/540, wRatio: 12/900, hRatio: 90/540, dy:0, speedRatio: 6/540 },
+      ai:     { xRatio: (900-30)/900, yRatio: (270-45)/540, wRatio: 12/900, hRatio: 90/540, speedRatio: 3.2/540, reaction:0.12 },
+      ball:   { xRatio: (900/2-6)/900, yRatio: (540/2-6)/540, sizeRatio: 12/540, dxRatio: 5/540, dyRatio: 2.5/540 },
+      score: 0,
+      phase: 1,
+      running: false,
+      raf: null,
+      highscore: 0,
+      maxPhases: 25
+    };
+
+    // helpers to get pixel values from ratios
+    function pxX(ratio){ return ratio * CSS_W; }
+    function pxY(ratio){ return ratio * CSS_H; }
+
+    // load highscore safely
+    (function loadHighscore(){
+      const raw = localStorage.getItem('pongHighscore');
+      const parsed = parseInt(raw, 10);
+      if (raw === null || raw === undefined || raw === '' || Number.isNaN(parsed) || parsed < 0){
+        state.highscore = 0;
+        localStorage.setItem('pongHighscore','0');
+      } else state.highscore = parsed;
+      highEl.textContent = state.highscore;
+    })();
+
+    // visitors count
+    (function loadVisitors(){
+      let v = localStorage.getItem('visits');
+      v = v ? parseInt(v)+1 : 1;
+      localStorage.setItem('visits', v);
+      visitorsEl.textContent = v.toLocaleString('pt-BR');
+    })();
+
+    // drawing using current CSS sizes
+    function draw(){
+      ctx.clearRect(0,0,CSS_W,CSS_H);
+
+      // dashed center
+      ctx.fillStyle = '#222';
+      for(let i=0;i<CSS_H;i+=22) ctx.fillRect((CSS_W/2)-1, i, 2, 14);
+
+      // get entity pixels
+      const playerPx = {
+        x: pxX(state.player.xRatio),
+        y: pxY(state.player.yRatio),
+        w: pxX(state.player.wRatio),
+        h: pxY(state.player.hRatio)
+      };
+      const aiPx = {
+        x: pxX(state.ai.xRatio),
+        y: pxY(state.ai.yRatio),
+        w: pxX(state.ai.wRatio),
+        h: pxY(state.ai.hRatio)
+      };
+      const ballPx = {
+        x: pxX(state.ball.xRatio),
+        y: pxY(state.ball.yRatio),
+        size: pxY(state.ball.sizeRatio)
+      };
+
+      // draw paddles & ball
+      ctx.fillStyle = '#8bff8b'; ctx.fillRect(playerPx.x, playerPx.y, playerPx.w, playerPx.h);
+      ctx.fillStyle = '#ff8b8b'; ctx.fillRect(aiPx.x, aiPx.y, aiPx.w, aiPx.h);
+      ctx.fillStyle = '#fff'; ctx.fillRect(ballPx.x, ballPx.y, ballPx.size, ballPx.size);
+
+      // HUD: phase
+      ctx.fillStyle = '#9f9';
+      ctx.font = `${Math.max(12, Math.round(CSS_H*0.025))}px Arial`;
+      ctx.textAlign = 'left';
+      ctx.fillText('Fase: ' + state.phase, 12, 20);
+    }
+
+    // collision detection in CSS pixels
     function rectsOverlap(ax,ay,aw,ah, bx,by,bw,bh){
       return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
     }
 
+    function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+
+    // paddle hit calculation (work in CSS pixels)
     function paddleHit(paddle){
-      // calcula ponto de impacto relativo (-1..1)
-      const paddleCenter = paddle.y + paddle.h/2;
-      const ballCenter = ball.y + ball.size/2;
-      const relative = (ballCenter - paddleCenter) / (paddle.h/2); // -1..1
-      const clamped = Math.max(-1, Math.min(1, relative));
-      const maxBounce = 6.0;
-      ball.dy = clamped * maxBounce;
-      const speed = Math.max(4.5, Math.abs(ball.dx));
-      if (paddle === player){
-        ball.dx = Math.abs(speed);
-        ball.x = player.x + player.w; // evita colar
+      const playerPx = { x: pxX(state.player.xRatio), y: pxY(state.player.yRatio), w: pxX(state.player.wRatio), h: pxY(state.player.hRatio) };
+      const aiPx = { x: pxX(state.ai.xRatio), y: pxY(state.ai.yRatio), w: pxX(state.ai.wRatio), h: pxY(state.ai.hRatio) };
+      const ballPx = { x: pxX(state.ball.xRatio), y: pxY(state.ball.yRatio), size: pxY(state.ball.sizeRatio) };
+
+      const paddleRect = (paddle === 'player') ? playerPx : aiPx;
+      const paddleCenter = paddleRect.y + paddleRect.h/2;
+      const ballCenter = ballPx.y + ballPx.size/2;
+      const relative = (ballCenter - paddleCenter) / (paddleRect.h/2);
+      const clamped = clamp(relative, -1, 1);
+      const maxBounce = 5.5 + state.phase*0.2;
+      // speed in CSS pixels per frame: base * (CSS_H/540)
+      const baseSpeed = (4 + state.phase*0.4) * (CSS_H / 540);
+      // update dy/dx ratios
+      state.ball.dyRatio = (clamped * maxBounce) / CSS_H;
+      if (paddle === 'player'){
+        state.ball.dxRatio = Math.abs(baseSpeed) / CSS_W;
+        // reposition ball slightly
+        const px = playerPx.x + playerPx.w + 0.5;
+        state.ball.xRatio = px / CSS_W;
       } else {
-        ball.dx = -Math.abs(speed);
-        ball.x = ai.x - ball.size;
+        state.ball.dxRatio = -Math.abs(baseSpeed) / CSS_W;
+        const px = aiPx.x - ballPx.size - 0.5;
+        state.ball.xRatio = px / CSS_W;
       }
+      // bounce sound
+      try{ sndBounce.currentTime = 0; sndBounce.play().catch(()=>{}); }catch(e){}
     }
 
-    function update(){
-      if (!running) return;
+    // reset ball center with randomized direction
+    function resetBall(toRight){
+      const sign = (typeof toRight === 'boolean') ? (toRight ? 1 : -1) : (Math.random()>0.5 ? 1 : -1);
+      const speedBase = (4 + state.phase*0.3) * (CSS_W/900); // horizontal pixels/frame scale
+      state.ball.xRatio = (CSS_W/2 - (pxY(state.ball.sizeRatio)/2)) / CSS_W;
+      state.ball.yRatio = (CSS_H/2 - (pxY(state.ball.sizeRatio)/2)) / CSS_H;
+      state.ball.dxRatio = (sign * (speedBase + Math.random()*1.2)) / CSS_W;
+      state.ball.dyRatio = ((Math.random()*4 - 2)) / CSS_H;
+    }
 
-      player.y += player.dy;
-      if (player.y < 0) player.y = 0;
-      if (player.y + player.h > CANVAS_H) player.y = CANVAS_H - player.h;
-
-      // IA
-      const aiCenter = ai.y + ai.h/2;
-      const ballCenter = ball.y + ball.size/2;
-      if (ballCenter < aiCenter - 6) ai.y -= ai.speed;
-      else if (ballCenter > aiCenter + 6) ai.y += ai.speed;
-      if (ai.y < 0) ai.y = 0;
-      if (ai.y + ai.h > CANVAS_H) ai.y = CANVAS_H - ai.h;
-
-      // move bola
-      ball.x += ball.dx;
-      ball.y += ball.dy;
-
-      // topo/baixo
-      if (ball.y <= 0){ ball.y = 0; ball.dy = -ball.dy; }
-      else if (ball.y + ball.size >= CANVAS_H){ ball.y = CANVAS_H - ball.size; ball.dy = -ball.dy; }
-
-      // colisões com raquetes (somente se bola vem na direção da raquete)
-      if (rectsOverlap(ball.x, ball.y, ball.size, ball.size, player.x, player.y, player.w, player.h) && ball.dx < 0){
-        paddleHit(player);
-      } else if (rectsOverlap(ball.x, ball.y, ball.size, ball.size, ai.x, ai.y, ai.w, ai.h) && ball.dx > 0){
-        paddleHit(ai);
-      }
-
-      // bola saiu pela esquerda -> jogador perdeu (zera score)
-      if (ball.x + ball.size < 0){
-        score = 0;
-        updateScoreDisplay();
-        resetBall();
-      }
-
-      // bola saiu pela direita -> AI errou -> jogador pontua
-      if (ball.x > CANVAS_W){
-        score += 1;
-        // atualiza highscore somente se necessário
-        if (score > highscore){
-          highscore = score;
-          localStorage.setItem('pongHighscore', String(highscore));
+    // increase difficulty per 25 points up to maxPhases
+    function maybeIncreaseDifficulty(){
+      const newPhase = Math.min(state.maxPhases, Math.floor(state.score / 25) + 1);
+      if (newPhase > state.phase){
+        state.phase = newPhase;
+        // notify user briefly
+        try{ sndPoint.currentTime = 0; sndPoint.play().catch(()=>{}); }catch(e){}
+        overlay.querySelector('h1').textContent = '🎉 Fase ' + state.phase;
+        overlay.style.display = 'flex';
+        setTimeout(()=> overlay.style.display = 'none', 900);
+        // adjust AI params
+        state.ai.speedRatio = (3.2 + (state.phase-1)*0.45) / 540;
+        state.ai.reaction = clamp(0.12 + (state.phase-1)*0.02, 0.06, 0.25);
+        // if reached final phase show victory message
+        if (state.phase >= state.maxPhases){
+          // small celebratory pause
+          overlay.querySelector('h1').textContent = '🏁 Você venceu todas as fases!';
+          overlay.style.display = 'flex';
+          try{ sndPoint.currentTime = 0; sndPoint.play().catch(()=>{}); }catch(e){}
+          // reset phase progression to allow replay after short pause
+          setTimeout(()=> overlay.style.display = 'none', 1400);
         }
-        updateScoreDisplay();
-        resetBall();
+      }
+    }
+
+    // AI update (in CSS pixels)
+    function updateAI(){
+      const ballCenter = (state.ball.yRatio * CSS_H) + (pxY(state.ball.sizeRatio)/2);
+      const aiCenter = (state.ai.yRatio * CSS_H) + (pxY(state.ai.hRatio)/2);
+      const distanceX = Math.abs((state.ball.xRatio * CSS_W + pxY(state.ball.sizeRatio)/2) - (state.ai.xRatio * CSS_W + pxX(state.ai.wRatio)/2));
+      const predictionFactor = clamp(1 - (distanceX / CSS_W), 0, 1);
+      let target = ballCenter + (state.ball.dyRatio * CSS_H * predictionFactor * 8);
+      const error = (1.2 / state.phase) * (Math.random() - 0.5) * 40;
+      target += error;
+      const aiSpeed = state.ai.speedRatio * CSS_H;
+      if (target < aiCenter - 6) state.ai.yRatio -= (aiSpeed / CSS_H);
+      else if (target > aiCenter + 6) state.ai.yRatio += (aiSpeed / CSS_H);
+      state.ai.yRatio = clamp(state.ai.yRatio, 0, (CSS_H - pxY(state.ai.hRatio)) / CSS_H);
+    }
+
+    // flash canvas effect using classes
+    function flashCanvas(color){
+      if (color === 'green'){
+        canvas.classList.add('flash-green');
+        setTimeout(()=> canvas.classList.remove('flash-green'), 350);
+      } else {
+        canvas.classList.add('flash-red');
+        setTimeout(()=> canvas.classList.remove('flash-red'), 350);
+      }
+    }
+
+    // update loop (work in ratios)
+    function update(){
+      if (!state.running) return;
+
+      // move player
+      state.player.yRatio += state.player.dy;
+
+      // clamp player
+      state.player.yRatio = clamp(state.player.yRatio, 0, (CSS_H - pxY(state.player.hRatio)) / CSS_H);
+
+      // AI
+      updateAI();
+
+      // move ball
+      state.ball.xRatio += state.ball.dxRatio;
+      state.ball.yRatio += state.ball.dyRatio;
+
+      // collisions top/bottom
+      if ((state.ball.yRatio * CSS_H) <= 0){
+        state.ball.yRatio = 0;
+        state.ball.dyRatio = -state.ball.dyRatio;
+      }
+      if ((state.ball.yRatio * CSS_H) + pxY(state.ball.sizeRatio) >= CSS_H){
+        state.ball.yRatio = (CSS_H - pxY(state.ball.sizeRatio)) / CSS_H;
+        state.ball.dyRatio = -state.ball.dyRatio;
       }
 
+      // paddle rects in CSS pixels
+      const playerPx = { x: pxX(state.player.xRatio), y: pxY(state.player.yRatio), w: pxX(state.player.wRatio), h: pxY(state.player.hRatio) };
+      const aiPx     = { x: pxX(state.ai.xRatio),     y: pxY(state.ai.yRatio),     w: pxX(state.ai.wRatio),     h: pxY(state.ai.hRatio) };
+      const ballPx   = { x: pxX(state.ball.xRatio),   y: pxY(state.ball.yRatio),   size: pxY(state.ball.sizeRatio) };
+
+      // collisions with paddles (only if moving toward them)
+      if (rectsOverlap(ballPx.x, ballPx.y, ballPx.size, ballPx.size, playerPx.x, playerPx.y, playerPx.w, playerPx.h) && state.ball.dxRatio < 0){
+        paddleHit('player');
+      } else if (rectsOverlap(ballPx.x, ballPx.y, ballPx.size, ballPx.size, aiPx.x, aiPx.y, aiPx.w, aiPx.h) && state.ball.dxRatio > 0){
+        paddleHit('ai');
+      }
+
+      // left side (player lost) -> reset score
+      if (ballPx.x + ballPx.size < 0){
+        flashCanvas('red');
+        state.score = 0;
+        updateHUD();
+        resetBall(true);
+        try{ sndLose.currentTime = 0; sndLose.play().catch(()=>{});}catch(e){}
+      }
+
+      // right side (player scored)
+      if (ballPx.x > CSS_W){
+        state.score += 1;
+        flashCanvas('green');
+        try{ sndPoint.currentTime = 0; sndPoint.play().catch(()=>{});}catch(e){}
+        if (state.score > state.highscore){
+          state.highscore = state.score;
+          localStorage.setItem('pongHighscore', String(state.highscore));
+          highEl.classList.add('flash-green');
+          setTimeout(()=> highEl.classList.remove('flash-green'), 700);
+        }
+        updateHUD();
+        maybeIncreaseDifficulty();
+        resetBall(false);
+      }
+
+      // draw (use updated CSS dims & ratios)
       draw();
-      rafId = requestAnimationFrame(update);
+      state.raf = requestAnimationFrame(update);
     }
 
-    function updateScoreDisplay(){
-      scoreEl.textContent = score;
-      highEl.textContent = highscore;
+    function updateHUD(){
+      scoreEl.textContent = state.score;
+      highEl.textContent = state.highscore;
     }
 
-    function resetBall(){
-      ball.x = CANVAS_W/2 - ball.size/2;
-      ball.y = CANVAS_H/2 - ball.size/2;
-      ball.dx = (Math.random() > 0.5 ? 1 : -1) * 5;
-      ball.dy = (Math.random() * 4 - 2);
-    }
-
-    // controles
+    // Controls: keyboard (desktop)
     document.addEventListener('keydown', e=>{
-      if (e.key === 'ArrowUp' || e.key === 'w') player.dy = -player.speed;
-      if (e.key === 'ArrowDown' || e.key === 's') player.dy = player.speed;
-      if (e.key.toLowerCase() === 'p') togglePause();
+      const key = e.key;
+      if (key === 'ArrowUp' || key === 'w' || key === 'W') state.player.dy = -state.player.speedRatio;
+      if (key === 'ArrowDown' || key === 's' || key === 'S') state.player.dy = state.player.speedRatio;
+      if (key.toLowerCase() === 'p') togglePause();
     });
     document.addEventListener('keyup', e=>{
-      if (e.key === 'ArrowUp' || e.key === 'w') { if (player.dy < 0) player.dy = 0; }
-      if (e.key === 'ArrowDown' || e.key === 's') { if (player.dy > 0) player.dy = 0; }
+      const key = e.key;
+      if (key === 'ArrowUp' || key === 'w' || key === 'W'){ if (state.player.dy < 0) state.player.dy = 0; }
+      if (key === 'ArrowDown' || key === 's' || key === 'S'){ if (state.player.dy > 0) state.player.dy = 0; }
     });
 
-    // iniciar / pausar
+    // Mobile touch controls
+    let touchState = { up:false, down:false };
+    function startTouchUp(){ touchState.up = true; state.player.dy = -state.player.speedRatio; navigator.vibrate && navigator.vibrate(20); }
+    function endTouchUp(){ touchState.up = false; if (!touchState.down) state.player.dy = 0; }
+    function startTouchDown(){ touchState.down = true; state.player.dy = state.player.speedRatio; navigator.vibrate && navigator.vibrate(20); }
+    function endTouchDown(){ touchState.down = false; if (!touchState.up) state.player.dy = 0; }
+
+    // attach pointer events for broad device support
+    btnUp.addEventListener('pointerdown', (e)=>{ e.preventDefault(); startTouchUp(); });
+    btnUp.addEventListener('pointerup', (e)=>{ e.preventDefault(); endTouchUp(); });
+    btnUp.addEventListener('pointercancel', endTouchUp);
+    btnUp.addEventListener('pointerleave', endTouchUp);
+
+    btnDown.addEventListener('pointerdown', (e)=>{ e.preventDefault(); startTouchDown(); });
+    btnDown.addEventListener('pointerup', (e)=>{ e.preventDefault(); endTouchDown(); });
+    btnDown.addEventListener('pointercancel', endTouchDown);
+    btnDown.addEventListener('pointerleave', endTouchDown);
+
+    // start/pause/toggle
     function startGame(){
       overlay.style.display = 'none';
-      running = true;
+      state.running = true;
+      state.score = 0;
+      state.phase = 1;
+      state.ai.speedRatio = 3.2/540;
+      state.ai.reaction = 0.12;
+      updateHUD();
       resetBall();
-      score = 0;
-      updateScoreDisplay();
-      try { bgMusic.play().catch(()=>{}); } catch(e){}
-      if (!rafId) update();
+      try{ bgMusic.volume = 0.35; bgMusic.play().catch(()=>{}); }catch(e){}
+      if (!state.raf) update();
     }
-
     function togglePause(){
-      running = !running;
-      if (running){
-        if (!rafId) update();
-        overlay.style.display = 'none';
-        overlay.querySelector('h1').textContent = '🏓 Pong Evolution';
-      } else {
-        overlay.style.display = 'flex';
-        overlay.querySelector('h1').textContent = '⏸️ Pausado';
-      }
+      state.running = !state.running;
+      if (state.running){ overlay.style.display = 'none'; if (!state.raf) update(); }
+      else { overlay.style.display = 'flex'; overlay.querySelector('h1').textContent = '⏸️ Pausado'; }
     }
 
-    // botões UI
-    startBtn.addEventListener('click', ()=>{
-      overlay.querySelector('h1').textContent = '🏓 Pong Evolution';
-      startGame();
-    });
+    // UI Buttons
+    startBtn.addEventListener('click', ()=>{ overlay.querySelector('h1').textContent = '🏓 Pong'; startGame(); });
 
     musicBtn.addEventListener('click', ()=>{
-      if (bgMusic.paused) bgMusic.play().catch(()=>{});
-      else bgMusic.pause();
+      if (bgMusic.paused){ bgMusic.volume = 0.35; bgMusic.play().catch(()=>{}); musicBtn.textContent = '🔇'; }
+      else { bgMusic.pause(); musicBtn.textContent = '🎵'; }
     });
 
     fsBtn.addEventListener('click', ()=>{
@@ -324,16 +592,39 @@
     });
 
     resetBtn.addEventListener('click', ()=>{
-      localStorage.removeItem('pongHighscore');
-      highscore = 0;
-      localStorage.setItem('pongHighscore', '0');
-      updateScoreDisplay();
+      localStorage.setItem('pongHighscore','0');
+      state.highscore = 0;
+      updateHUD();
       alert('Recorde zerado.');
     });
 
-    // inicializa display e bola
-    updateScoreDisplay();
-    resetBall();
+    // Init: resize, map coords, show mobile controls conditionally
+    function init(){
+      resizeCanvas();
+      mapCoordsFromCanvas();
+      // show mobile controls only when device is mobile / small
+      const showMobile = shouldShowMobileControls();
+      mobileControls.style.display = showMobile ? 'flex' : 'none';
+      mobileControls.setAttribute('aria-hidden', showMobile ? 'false' : 'true');
+
+      // map ratio positions to actual CSS pixel based ratios (if canvas resized)
+      // Ensure ratios reflect current CSS dims
+      // (we keep state ratios as initial; they will be used and scaled)
+      draw();
+    }
+    init();
+
+    // allow one tap to unlock audio in some browsers
+    function unlockAudioOnce(){
+      if (bgMusic.paused){ bgMusic.play().catch(()=>{}); bgMusic.pause(); }
+      document.removeEventListener('pointerdown', unlockAudioOnce);
+    }
+    document.addEventListener('pointerdown', unlockAudioOnce);
+
+    // expose resize on load
+    window.addEventListener('load', ()=>{ resizeCanvas(); mapCoordsFromCanvas(); draw(); });
+
+  })();
   </script>
 </body>
 </html>
