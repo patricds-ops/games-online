@@ -2,9 +2,49 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Pac-Man</title>
 
-  <!-- ✅ Google Analytics (Google Tag gtag.js) -->
+  <!-- ✅ SEO AVANÇADO -->
+  <title>Pac-Man Evolution — Jogar Online Grátis (PC e Mobile)</title>
+
+  <meta name="description" content="Jogue Pac-Man Evolution online grátis — versão moderna com fases, recorde salvo, joystick no celular e otimizado para PC. Sem instalar nada.">
+  <meta name="keywords" content="pacman online, jogar pacman, pac man grátis, jogo retrô, jogo clássico, arcade online, pacman mobile, pacman joystick">
+  <meta name="author" content="Games On-Line">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://SEU_SITE_AQUI.com/pacman">
+
+  <!-- ✅ OPEN GRAPH -->
+  <meta property="og:title" content="Pac-Man Evolution — Jogar Online Grátis">
+  <meta property="og:description" content="Jogue Pac-Man Evolution direto do navegador. Sem instalar. Compatível com PC e celular.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://SEU_SITE_AQUI.com/pacman">
+  <meta property="og:image" content="https://SEU_SITE_AQUI.com/imagem-pacman.jpg">
+
+  <!-- ✅ TWITTER CARD -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pac-Man Evolution — Jogar Online Grátis">
+  <meta name="twitter:description" content="Versão moderna com joystick no celular e recorde salvo.">
+  <meta name="twitter:image" content="https://SEU_SITE_AQUI.com/imagem-pacman.jpg">
+
+  <!-- ✅ JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Pac-Man Evolution",
+    "operatingSystem": "Web",
+    "applicationCategory": "Game",
+    "genre": "Arcade",
+    "url": "https://SEU_SITE_AQUI.com/pacman",
+    "image": "https://SEU_SITE_AQUI.com/imagem-pacman.jpg",
+    "author": {
+      "@type": "Organization",
+      "name": "Games On-Line"
+    }
+  }
+  </script>
+
+  <!-- ✅ Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6NMX3MDJVN"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -15,8 +55,9 @@
 
   <!-- ✅ AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890693169488330"
-    crossorigin="anonymous"></script>
+  crossorigin="anonymous"></script>
 
+  <!-- ✅ SEU STYLE ORIGINAL (inalterado) -->
   <style>
     body {
       margin: 0;
@@ -47,6 +88,9 @@
     canvas {
       background: #000;
       display: block;
+      image-rendering: pixelated;
+      transition: transform .12s ease-out;
+      transform-origin: top left;
     }
     #overlay {
       position: absolute;
@@ -99,6 +143,11 @@
       background: #222;
       flex-shrink: 0;
     }
+    /* joystick default styles (kept minimal; visibility handled by JS) */
+    .joystick-container { display: none; pointer-events: auto; }
+    @media (max-width: 900px) {
+      .joystick-container { display: block; }
+    }
   </style>
 </head>
 
@@ -132,19 +181,37 @@
 
 <script>
 /* =========================================================
-   PAC-MAN EVO - Script (COM JOYSTICK ANALÓGICO MOBILE)
-   Substitua totalmente o <script> atual por este bloco.
+   PAC-MAN EVO - JOYSTICK + ROTACIONAMENTO + RESPONSIVO 90%
+   Final, pronto para colar (substitua o script atual)
    ========================================================= */
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-const tileSize = 16;
 
+/* Ajuste responsivo: escala para ~90% da largura disponível no mobile */
+function ajustarCanvasMobile() {
+  const isMobile = window.innerWidth <= 900;
+  if (isMobile) {
+    // usamos largura disponível para garantir ocupa ~90% da tela
+    const escala = (window.innerWidth * 0.90) / canvas.width;
+    canvas.style.transform = `scale(${escala})`;
+  } else {
+    canvas.style.transform = "scale(1)";
+  }
+}
+window.addEventListener("load", ajustarCanvasMobile);
+window.addEventListener("resize", ajustarCanvasMobile);
+
+/* ---------------------------
+   Variáveis e elementos
+   --------------------------- */
+const tileSize = 16;
 const overlay = document.getElementById("overlay");
 const pauseOverlay = document.getElementById("pauseOverlay");
 const startBtn = document.getElementById("startBtn");
 const scoreEl = document.getElementById("score");
 const highscoreEl = document.getElementById("highscore");
+
 const bgMusic = document.getElementById("bgMusic");
 const eatSound = document.getElementById("eatSound");
 const dieSound = document.getElementById("dieSound");
@@ -154,13 +221,7 @@ const musicBtn = document.getElementById("musicBtn");
 const fsBtn = document.getElementById("fsBtn");
 
 let score = 0;
-let highscore = localStorage.getItem("pacmanHighscore");
-if (highscore === null || isNaN(parseInt(highscore))) {
-  highscore = 0;
-  localStorage.setItem("pacmanHighscore", 0);
-} else {
-  highscore = parseInt(highscore);
-}
+let highscore = parseInt(localStorage.getItem("pacmanHighscore") || "0", 10);
 highscoreEl.textContent = highscore;
 
 let gameRunning = false;
@@ -174,7 +235,7 @@ let pacmanSpeed = 8;
 let ghostSpeed = 25;
 
 /* ---------------------------
-   Base map (mantido igual)
+   Mapa base
    --------------------------- */
 const baseMap = [
   "############################",
@@ -208,7 +269,7 @@ const baseMap = [
 ];
 
 /* ---------------------------
-   Level generation & map
+   Geração de nível e mapa
    --------------------------- */
 function generateLevel(levelNum) {
   const newMap = baseMap.map(row => row.split(""));
@@ -238,7 +299,7 @@ function createMap() {
 }
 
 /* ---------------------------
-   Draw map & pellets
+   Desenho do mapa e pellets
    --------------------------- */
 function drawMap() {
   for (let y = 0; y < map.length; y++) {
@@ -254,7 +315,7 @@ function drawMap() {
 }
 
 /* ---------------------------
-   Pacman, ghosts & teleport
+   Pac-Man / Fantasmas / Teleport
    --------------------------- */
 function createPacman() {
   pacman = { x: 13, y: 17, dir: { x: 0, y: 0 }, tick: 0 };
@@ -276,7 +337,7 @@ function teleport(entity) {
 }
 
 /* ---------------------------
-   Move logic (pacman & ghosts)
+   Movimento do Pac-Man
    --------------------------- */
 function movePacman() {
   pacman.tick++;
@@ -299,6 +360,9 @@ function movePacman() {
   teleport(pacman);
 }
 
+/* ---------------------------
+   Movimento fantasmas
+   --------------------------- */
 function moveGhosts() {
   ghosts.forEach(g => {
     g.tick++;
@@ -331,7 +395,7 @@ function moveGhosts() {
 }
 
 /* ---------------------------
-   Eat pellets & collision
+   Comer pellets + checar colisões
    --------------------------- */
 function eatPellets() {
   pellets = pellets.filter(p => {
@@ -366,10 +430,9 @@ function checkCollision() {
 }
 
 /* ---------------------------
-   Draw Pac-Man with rotation
+   Desenhar Pac-Man com rotação
    --------------------------- */
 function drawPacman() {
-  // determine angle from pacman.dir
   let angle = 0;
   if (pacman.dir.x === 1) angle = 0;
   else if (pacman.dir.x === -1) angle = Math.PI;
@@ -383,8 +446,6 @@ function drawPacman() {
   ctx.save();
   ctx.translate(cx, cy);
   ctx.rotate(angle);
-
-  // mouth opening size (you can tweak)
   const mouth = 0.25 * Math.PI;
   ctx.beginPath();
   ctx.fillStyle = "yellow";
@@ -392,12 +453,11 @@ function drawPacman() {
   ctx.arc(0, 0, r, mouth, 2 * Math.PI - mouth);
   ctx.closePath();
   ctx.fill();
-
   ctx.restore();
 }
 
 /* ---------------------------
-   Draw ghosts
+   Desenhar fantasmas
    --------------------------- */
 function drawGhosts() {
   ghosts.forEach(g => {
@@ -451,7 +511,6 @@ function startGame() {
   setupLevel();
   gameRunning = true;
   paused = false;
-  // try play music (may be blocked until user interacts)
   try { bgMusic.play(); } catch (e) {}
   updateGame();
 }
@@ -485,73 +544,58 @@ function gameOver(win) {
 }
 
 /* ---------------------------
-   Keyboard controls (PC)
+   Teclado (PC)
    --------------------------- */
 document.addEventListener("keydown", (e) => {
   if (!gameRunning) return;
-
   keysPressed[e.key] = true;
-
   if (e.key === "p") {
     paused = !paused;
     pauseOverlay.style.display = paused ? "flex" : "none";
   }
 });
-
-document.addEventListener("keyup", (e) => {
-  // clear only that key
-  keysPressed[e.key] = false;
-});
+document.addEventListener("keyup", (e) => keysPressed[e.key] = false);
 
 /* ---------------------------
-   Remove swipe handlers (we use joystick)
+   JOYSTICK MOBILE (injetado)
    --------------------------- */
-
-/* ---------------------------
-   JOYSTICK: create and handle (mobile only)
-   - injected via JS so we don't touch HTML/CSS files
-   --------------------------- */
-
 (function createJoystickIfTouch() {
-  if (!('ontouchstart' in window)) return; // not touch device -> no joystick
+  if (!("ontouchstart" in window)) return;
 
-  // container on top of canvas (positioned relative to page)
-  const container = document.createElement('div');
-  container.id = 'mobile-joystick';
-  // inline styles only (doesn't touch your CSS)
+  const container = document.createElement("div");
+  container.className = "joystick-container";
   Object.assign(container.style, {
-    position: 'fixed',
-    left: '24px',
-    bottom: '24px',
-    width: '120px',
-    height: '120px',
-    borderRadius: '50%',
-    background: 'rgba(255,255,255,0.06)',
-    border: '2px solid rgba(255,255,255,0.12)',
+    position: "fixed",
+    left: "24px",
+    bottom: "24px",
+    width: "120px",
+    height: "120px",
+    borderRadius: "50%",
+    background: "rgba(255,255,255,0.06)",
+    border: "2px solid rgba(255,255,255,0.12)",
     zIndex: 9999,
-    touchAction: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    userSelect: 'none'
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    touchAction: "none",
+    userSelect: "none"
   });
 
-  const stick = document.createElement('div');
-  stick.id = 'mobile-joystick-stick';
+  const stick = document.createElement("div");
   Object.assign(stick.style, {
-    width: '56px',
-    height: '56px',
-    borderRadius: '50%',
-    background: 'rgba(255,255,0,0.95)',
-    transform: 'translate(0px,0px)',
-    transition: 'transform 0.08s linear',
-    touchAction: 'none'
+    width: "56px",
+    height: "56px",
+    borderRadius: "50%",
+    background: "rgba(255,255,0,0.95)",
+    transform: "translate(0px,0px)",
+    transition: "transform 0.06s linear",
+    touchAction: "none",
+    boxShadow: "0 0 8px rgba(0,0,0,0.4)"
   });
 
   container.appendChild(stick);
   document.body.appendChild(container);
 
-  // joystick logic
   let center = { x: 0, y: 0 };
   let active = false;
 
@@ -561,26 +605,24 @@ document.addEventListener("keyup", (e) => {
 
   function resetStick() {
     setStick(0, 0);
-    // clear keys
     keysPressed = {};
   }
 
-  container.addEventListener('touchstart', (e) => {
-    e.preventDefault();
+  container.addEventListener("touchstart", (ev) => {
+    ev.preventDefault();
+    if (!gameRunning) return;
     active = true;
-    const t = e.touches[0];
     const rect = container.getBoundingClientRect();
     center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
   }, { passive: false });
 
-  container.addEventListener('touchmove', (e) => {
+  container.addEventListener("touchmove", (ev) => {
+    ev.preventDefault();
     if (!active || !gameRunning) return;
-    e.preventDefault();
-    const t = e.touches[0];
+    const t = ev.touches[0];
     const dx = t.clientX - center.x;
     const dy = t.clientY - center.y;
-    // clamp radius
-    const maxR = 36; // stick travel radius
+    const maxR = 36;
     const dist = Math.sqrt(dx * dx + dy * dy);
     const r = Math.min(dist, maxR);
     const ang = Math.atan2(dy, dx);
@@ -588,49 +630,42 @@ document.addEventListener("keyup", (e) => {
     const sy = Math.sin(ang) * r;
     setStick(sx, sy);
 
-    // convert to directional key press (prefer dominant axis)
+    // prefer dominant axis for grid movement
     if (Math.abs(dx) > Math.abs(dy)) {
-      if (dx > 10) {
-        keysPressed = { ArrowRight: true };
-      } else if (dx < -10) {
-        keysPressed = { ArrowLeft: true };
-      }
+      keysPressed = { ArrowRight: dx > 0 };
+      if (dx > 10) keysPressed = { ArrowRight: true };
+      else if (dx < -10) keysPressed = { ArrowLeft: true };
     } else {
-      if (dy > 10) {
-        keysPressed = { ArrowDown: true };
-      } else if (dy < -10) {
-        keysPressed = { ArrowUp: true };
-      }
+      if (dy > 10) keysPressed = { ArrowDown: true };
+      else if (dy < -10) keysPressed = { ArrowUp: true };
     }
   }, { passive: false });
 
-  container.addEventListener('touchend', (e) => {
+  container.addEventListener("touchend", (ev) => {
+    ev.preventDefault();
     active = false;
     resetStick();
-  });
+  }, { passive: false });
+
 })();
 
 /* ---------------------------
-   Buttons top (start, music, fullscreen)
+   Botões: start, música, fullscreen
    --------------------------- */
 startBtn.addEventListener("click", startGame);
 
 musicBtn.addEventListener("click", () => {
-  if (bgMusic.paused) bgMusic.play();
-  else bgMusic.pause();
+  try {
+    if (bgMusic.paused) bgMusic.play();
+    else bgMusic.pause();
+  } catch(e){}
 });
 
 fsBtn.addEventListener("click", () => {
-  if (!document.fullscreenElement)
-    document.documentElement.requestFullscreen();
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
   else document.exitFullscreen();
 });
-
-/* ---------------------------
-   End of script
-   --------------------------- */
 </script>
-
 
 </body>
 </html>
