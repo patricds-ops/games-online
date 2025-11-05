@@ -3,7 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>Pac-Man Evolution</title>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890693169488330" crossorigin="anonymous"></script>
+
+  <!-- ✅ Google Analytics (Google Tag gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6NMX3MDJVN"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6NMX3MDJVN');
+  </script>
+
+  <!-- ✅ AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890693169488330"
+    crossorigin="anonymous"></script>
+
   <style>
     body {
       margin: 0;
@@ -79,13 +92,6 @@
       z-index: 9;
       color: yellow;
     }
-    .flash {
-      animation: flashRed 0.5s;
-    }
-    @keyframes flashRed {
-      0% { background: rgba(255,0,0,0.6); }
-      100% { background: rgba(0,0,0,0.8); }
-    }
     footer {
       text-align: center;
       padding: 5px;
@@ -95,6 +101,7 @@
     }
   </style>
 </head>
+
 <body>
   <header>
     Pac-Man Evolution – Pontos: <span id="score">0</span> | Recorde: <span id="highscore">0</span>
@@ -117,13 +124,18 @@
     <p>© 2025 Games On-Line. Todos os direitos reservados.</p>
   </footer>
 
-  <!-- Sons -->
+  <!-- Sons do jogo -->
   <audio id="eatSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
   <audio id="dieSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
   <audio id="winSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
   <audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" loop></audio>
 
 <script>
+
+  /* =========================================================
+       PAC-MAN EVO - Código do Jogo (COM MOBILE)
+  ========================================================== */
+
   const canvas = document.getElementById("gameCanvas");
   const ctx = canvas.getContext("2d");
   const tileSize = 16;
@@ -142,16 +154,7 @@
   const fsBtn = document.getElementById("fsBtn");
 
   let score = 0;
-
-  // 🔧 Correção: recorde começa em 0 se ainda não existir
-  let highscore = localStorage.getItem("pacmanHighscore");
-  if (highscore === null || isNaN(parseInt(highscore))) {
-    highscore = 0;
-    localStorage.setItem("pacmanHighscore", 0);
-  } else {
-    highscore = parseInt(highscore);
-  }
-
+  let highscore = localStorage.getItem("pacmanHighscore") ?? 0;
   highscoreEl.textContent = highscore;
 
   let gameRunning = false;
@@ -164,10 +167,6 @@
   let pacmanSpeed = 8;
   let ghostSpeed = 25;
 
-
-  highscoreEl.textContent = highscore;
-
-  // --- Mapa base e gerador de variações ---
   const baseMap = [
     "############################",
     "#............##............#",
@@ -201,13 +200,11 @@
 
   function generateLevel(levelNum) {
     const newMap = baseMap.map(row => row.split(""));
-    // Alterar aleatoriamente partes do mapa conforme a fase
     const randFactor = levelNum * 3;
     for (let i = 0; i < randFactor; i++) {
       const y = 3 + Math.floor(Math.random() * (baseMap.length - 6));
       const x = 3 + Math.floor(Math.random() * (baseMap[0].length - 6));
-      if (newMap[y][x] === ".") newMap[y][x] = "#";
-      else if (newMap[y][x] === "#") newMap[y][x] = ".";
+      newMap[y][x] = (newMap[y][x] === ".") ? "#" : ".";
     }
     return newMap.map(r => r.join(""));
   }
@@ -246,9 +243,9 @@
 
   function createGhosts() {
     ghosts = [
-      { x: 13, y: 11, color: "red", dir: { x: 1, y: 0 }, tick: 0 },
+      { x: 13, y: 11, color: "red",  dir: { x: 1,  y: 0 }, tick: 0 },
       { x: 14, y: 11, color: "pink", dir: { x: -1, y: 0 }, tick: 0 },
-      { x: 12, y: 11, color: "cyan", dir: { x: 0, y: 1 }, tick: 0 }
+      { x: 12, y: 11, color: "cyan", dir: { x: 0,  y: 1 }, tick: 0 }
     ];
   }
 
@@ -265,12 +262,13 @@
 
     let newDir = { x: 0, y: 0 };
     if (keysPressed["ArrowUp"]) newDir = { x: 0, y: -1 };
-    else if (keysPressed["ArrowDown"]) newDir = { x: 0, y: 1 };
-    else if (keysPressed["ArrowLeft"]) newDir = { x: -1, y: 0 };
-    else if (keysPressed["ArrowRight"]) newDir = { x: 1, y: 0 };
+    if (keysPressed["ArrowDown"]) newDir = { x: 0, y: 1 };
+    if (keysPressed["ArrowLeft"]) newDir = { x: -1, y: 0 };
+    if (keysPressed["ArrowRight"]) newDir = { x: 1, y: 0 };
 
     const tx = pacman.x + newDir.x;
     const ty = pacman.y + newDir.y;
+
     if (map[ty] && map[ty][tx] !== "#") {
       pacman.dir = newDir;
       pacman.x = tx;
@@ -320,12 +318,14 @@
       }
       return true;
     });
+
     scoreEl.textContent = score;
     if (score > highscore) {
       highscore = score;
       localStorage.setItem("pacmanHighscore", highscore);
       highscoreEl.textContent = highscore;
     }
+
     if (pellets.length === 0) {
       winSound.play();
       nextLevel();
@@ -436,18 +436,61 @@
     overlay.querySelector("button").innerText = "🔁 Jogar Novamente";
   }
 
-  document.addEventListener("keydown", e => {
+
+  /* =========================================================
+       ✅ CONTROLES PC (Teclado)
+  ========================================================== */
+  document.addEventListener("keydown", (e) => {
     if (!gameRunning) return;
+
     keysPressed[e.key] = true;
+
     if (e.key === "p") {
       paused = !paused;
       pauseOverlay.style.display = paused ? "flex" : "none";
     }
   });
 
-  document.addEventListener("keyup", e => {
+  document.addEventListener("keyup", (e) => {
     keysPressed[e.key] = false;
   });
+
+
+  /* =========================================================
+       ✅ CONTROLES MOBILE (SWIPE)
+  ========================================================== */
+
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  canvas.addEventListener("touchstart", (e) => {
+    const t = e.touches[0];
+    touchStartX = t.clientX;
+    touchStartY = t.clientY;
+  });
+
+  canvas.addEventListener("touchmove", (e) => {
+    if (!gameRunning) return;
+
+    const t = e.touches[0];
+    const deltaX = t.clientX - touchStartX;
+    const deltaY = t.clientY - touchStartY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // movimento horizontal
+      if (deltaX > 20) keysPressed = { ArrowRight: true };
+      else if (deltaX < -20) keysPressed = { ArrowLeft: true };
+    } else {
+      // movimento vertical
+      if (deltaY > 20) keysPressed = { ArrowDown: true };
+      else if (deltaY < -20) keysPressed = { ArrowUp: true };
+    }
+  });
+
+
+  /* =========================================================
+       BOTÕES SUPERIORES
+  ========================================================== */
 
   startBtn.addEventListener("click", startGame);
 
@@ -461,6 +504,7 @@
       document.documentElement.requestFullscreen();
     else document.exitFullscreen();
   });
+
 </script>
 
 </body>
