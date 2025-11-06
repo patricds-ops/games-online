@@ -13,20 +13,20 @@
   <!-- Canonical URL -->
   <link rel="canonical" href="https://SEU_SITE_AQUI.com/pacman">
 
-  <!-- ✅ OPEN GRAPH -->
+  <!-- OPEN GRAPH -->
   <meta property="og:title" content="Pac-Man Evolution — Jogar Online Grátis">
   <meta property="og:description" content="Jogue Pac-Man Evolution direto do navegador. Sem instalar. Compatível com PC e celular.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://SEU_SITE_AQUI.com/pacman">
   <meta property="og:image" content="https://SEU_SITE_AQUI.com/imagem-pacman.jpg">
 
-  <!-- ✅ TWITTER CARD -->
+  <!-- TWITTER CARD -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Pac-Man Evolution — Jogar Online Grátis">
   <meta name="twitter:description" content="Versão moderna com joystick no celular e recorde salvo.">
   <meta name="twitter:image" content="https://SEU_SITE_AQUI.com/imagem-pacman.jpg">
 
-  <!-- ✅ JSON-LD -->
+  <!-- JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -44,7 +44,7 @@
   }
   </script>
 
-  <!-- ✅ Google Analytics -->
+  <!-- Google Tag -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6NMX3MDJVN"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -53,101 +53,25 @@
     gtag('config', 'G-6NMX3MDJVN');
   </script>
 
-  <!-- ✅ AdSense -->
+  <!-- AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890693169488330"
   crossorigin="anonymous"></script>
 
-  <!-- ✅ SEU STYLE ORIGINAL (inalterado) -->
+  <!-- style original (não alterado) -->
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-    header {
-      text-align: center;
-      padding: 5px;
-      font-size: 1.2em;
-      font-weight: bold;
-      background: #222;
-    }
-    #gameWrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
-    }
-    canvas {
-      background: #000;
-      display: block;
-      image-rendering: pixelated;
-      transition: transform .12s ease-out;
-      transform-origin: top left;
-    }
-    #overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      text-align: center;
-    }
-    #overlay h1 {
-      font-size: 3em;
-      margin-bottom: 20px;
-      color: yellow;
-      animation: glow 2s infinite alternate;
-    }
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #ff0, 0 0 20px #ff0; }
-      to { text-shadow: 0 0 20px #ff0, 0 0 40px #ff0; }
-    }
-    button {
-      background: #ff0;
-      border: none;
-      padding: 6px 14px;
-      font-size: 1em;
-      cursor: pointer;
-      border-radius: 6px;
-      margin: 5px;
-    }
-    #pauseOverlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      font-size: 2em;
-      font-weight: bold;
-      z-index: 9;
-      color: yellow;
-    }
-    footer {
-      text-align: center;
-      padding: 5px;
-      font-size: 0.9em;
-      background: #222;
-      flex-shrink: 0;
-    }
-    /* joystick default styles (kept minimal; visibility handled by JS) */
-    .joystick-container { display: none; pointer-events: auto; }
-    @media (max-width: 900px) {
-      .joystick-container { display: block; }
-    }
+    body { margin:0; padding:0; background:#111; color:#fff; font-family: Arial, sans-serif; display:flex; flex-direction:column; height:100vh; overflow:hidden; }
+    header { text-align:center; padding:5px; font-size:1.2em; font-weight:bold; background:#222; }
+    #gameWrapper { flex:1; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; }
+    canvas { background:#000; display:block; image-rendering: pixelated; transition: transform .12s ease-out; transform-origin: top left; }
+    #overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10; text-align:center; }
+    #overlay h1 { font-size:3em; margin-bottom:20px; color:yellow; animation: glow 2s infinite alternate; }
+    @keyframes glow { from { text-shadow:0 0 10px #ff0,0 0 20px #ff0 } to { text-shadow:0 0 20px #ff0,0 0 40px #ff0 } }
+    button { background:#ff0; border:none; padding:6px 14px; font-size:1em; cursor:pointer; border-radius:6px; margin:5px; }
+    #pauseOverlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; font-size:2em; font-weight:bold; z-index:9; color:yellow; }
+    footer { text-align:center; padding:5px; font-size:0.9em; background:#222; flex-shrink:0; }
+    /* joystick minimal — visibility controlled by JS */
+    .joystick-container { display:none; pointer-events:auto; }
+    @media (max-width:900px) { .joystick-container { display:block; } }
   </style>
 </head>
 
@@ -169,11 +93,9 @@
     <div id="pauseOverlay">⏸️ Jogo Pausado</div>
   </div>
 
-  <footer>
-    <p>© 2025 Games On-Line. Todos os direitos reservados.</p>
-  </footer>
+  <footer><p>© 2025 Games On-Line. Todos os direitos reservados.</p></footer>
 
-  <!-- Sons do jogo -->
+  <!-- Sons -->
   <audio id="eatSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
   <audio id="dieSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
   <audio id="winSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
@@ -181,154 +103,143 @@
 
 <script>
 /* =========================================================
-   PAC-MAN EVO - JOYSTICK + ROTACIONAMENTO + RESPONSIVO 90%
-   Final, pronto para colar (substitua o script atual)
+   Pac-Man Evolution — fases + IA estilo original + boca animada (canvas)
+   Tudo no mesmo arquivo, mobile joystick e escala ~90% (sem cortar)
    ========================================================= */
 
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-
-/* Ajuste responsivo: escala para ~90% da largura disponível no mobile */
+/* --- Canvas responsivo (90% largura no mobile) --- */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
 function ajustarCanvasMobile() {
   const isMobile = window.innerWidth <= 900;
   if (isMobile) {
-    // usamos largura disponível para garantir ocupa ~90% da tela
     const escala = (window.innerWidth * 0.90) / canvas.width;
     canvas.style.transform = `scale(${escala})`;
   } else {
-    canvas.style.transform = "scale(1)";
+    canvas.style.transform = 'scale(1)';
   }
 }
-window.addEventListener("load", ajustarCanvasMobile);
-window.addEventListener("resize", ajustarCanvasMobile);
+window.addEventListener('load', ajustarCanvasMobile);
+window.addEventListener('resize', ajustarCanvasMobile);
 
-/* ---------------------------
-   Variáveis e elementos
-   --------------------------- */
+/* --- Elementos e variáveis --- */
+const overlay = document.getElementById('overlay');
+const pauseOverlay = document.getElementById('pauseOverlay');
+const startBtn = document.getElementById('startBtn');
+const scoreEl = document.getElementById('score');
+const highscoreEl = document.getElementById('highscore');
+const bgMusic = document.getElementById('bgMusic');
+const eatSound = document.getElementById('eatSound');
+const dieSound = document.getElementById('dieSound');
+const winSound = document.getElementById('winSound');
+const musicBtn = document.getElementById('musicBtn');
+const fsBtn = document.getElementById('fsBtn');
+
 const tileSize = 16;
-const overlay = document.getElementById("overlay");
-const pauseOverlay = document.getElementById("pauseOverlay");
-const startBtn = document.getElementById("startBtn");
-const scoreEl = document.getElementById("score");
-const highscoreEl = document.getElementById("highscore");
-
-const bgMusic = document.getElementById("bgMusic");
-const eatSound = document.getElementById("eatSound");
-const dieSound = document.getElementById("dieSound");
-const winSound = document.getElementById("winSound");
-
-const musicBtn = document.getElementById("musicBtn");
-const fsBtn = document.getElementById("fsBtn");
-
 let score = 0;
-let highscore = parseInt(localStorage.getItem("pacmanHighscore") || "0", 10);
+let highscore = parseInt(localStorage.getItem('pacmanHighscore') || '0', 10);
 highscoreEl.textContent = highscore;
 
 let gameRunning = false;
 let paused = false;
 let pacman, ghosts, map, pellets;
 let keysPressed = {};
-
 let levelNumber = 1;
 const maxLevels = 25;
 let pacmanSpeed = 8;
 let ghostSpeed = 25;
 
-/* ---------------------------
-   Mapa base
-   --------------------------- */
+/* --- Base map (template) --- */
 const baseMap = [
-  "############################",
-  "#............##............#",
-  "#.####.#####.##.#####.####.#",
-  "#*####.#####.##.#####.####*#",
-  "#.####.#####.##.#####.####.#",
-  "#..........................#",
-  "#.####.##.########.##.####.#",
-  "#.####.##.########.##.####.#",
-  "#......##....##....##......#",
-  "######.##### ## #####.######",
-  "     #.##### ## #####.#     ",
-  "     #.##          ##.#     ",
-  "     #.## ###--### ##.#     ",
-  "######.## #      # ##.######",
-  "      .   #      #   .      ",
-  "######.## #      # ##.######",
-  "     #.## ######## ##.#     ",
-  "     #.##          ##.#     ",
-  "     #.## ######## ##.#     ",
-  "######.## ######## ##.######",
-  "#............##............#",
-  "#.####.#####.##.#####.####.#",
-  "#*..##................##..*#",
-  "###.##.##.########.##.##.###",
-  "#......##....##....##......#",
-  "#.##########.##.##########.#",
-  "#..........................#",
-  "############################"
+"############################",
+"#............##............#",
+"#.####.#####.##.#####.####.#",
+"#*####.#####.##.#####.####*#",
+"#.####.#####.##.#####.####.#",
+"#..........................#",
+"#.####.##.########.##.####.#",
+"#.####.##.########.##.####.#",
+"#......##....##....##......#",
+"######.##### ## #####.######",
+"     #.##### ## #####.#     ",
+"     #.##          ##.#     ",
+"     #.## ###--### ##.#     ",
+"######.## #      # ##.######",
+"      .   #      #   .      ",
+"######.## #      # ##.######",
+"     #.## ######## ##.#     ",
+"     #.##          ##.#     ",
+"     #.## ######## ##.#     ",
+"######.## ######## ##.######",
+"#............##............#",
+"#.####.#####.##.#####.####.#",
+"#*..##................##..*#",
+"###.##.##.########.##.##.###",
+"#......##....##....##......#",
+"#.##########.##.##########.#",
+"#..........................#",
+"############################"
 ];
 
-/* ---------------------------
-   Geração de nível e mapa
-   --------------------------- */
+/* --- utility: deep copy map and create variations per level (1A: novo mapa) --- */
 function generateLevel(levelNum) {
-  const newMap = baseMap.map(row => row.split(""));
-  const randFactor = levelNum * 3;
+  // copy base and randomly flip some . <-> #
+  const newMap = baseMap.map(r => r.split(''));
+  const randFactor = Math.min(60, levelNum * 4); // control variation
   for (let i = 0; i < randFactor; i++) {
-    const y = 3 + Math.floor(Math.random() * (baseMap.length - 6));
-    const x = 3 + Math.floor(Math.random() * (baseMap[0].length - 6));
-    if (newMap[y][x] === ".") newMap[y][x] = "#";
-    else if (newMap[y][x] === "#") newMap[y][x] = ".";
+    const y = 3 + Math.floor(Math.random() * (newMap.length - 6));
+    const x = 3 + Math.floor(Math.random() * (newMap[0].length - 6));
+    if (newMap[y][x] === '.') newMap[y][x] = '#';
+    else if (newMap[y][x] === '#') newMap[y][x] = '.';
   }
-  return newMap.map(r => r.join(""));
+  return newMap.map(r => r.join(''));
 }
 
+/* --- create map and pellets --- */
 function createMap() {
   const level = generateLevel(levelNumber);
-  pellets = [];
   map = [];
+  pellets = [];
   for (let y = 0; y < level.length; y++) {
     const row = [];
     for (let x = 0; x < level[y].length; x++) {
       const ch = level[y][x];
-      if (ch === ".") pellets.push({ x, y });
       row.push(ch);
+      if (ch === '.') pellets.push({x, y});
     }
     map.push(row);
   }
 }
 
-/* ---------------------------
-   Desenho do mapa e pellets
-   --------------------------- */
+/* --- draw map and pellets --- */
 function drawMap() {
-  for (let y = 0; y < map.length; y++) {
-    for (let x = 0; x < map[y].length; x++) {
-      if (map[y][x] === "#") {
-        ctx.fillStyle = "#00F";
-        ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+  for (let y=0;y<map.length;y++){
+    for (let x=0;x<map[y].length;x++){
+      if (map[y][x] === '#') {
+        ctx.fillStyle = '#00F';
+        ctx.fillRect(x*tileSize, y*tileSize, tileSize, tileSize);
+      } else {
+        // empty tile — nothing
       }
     }
   }
-  ctx.fillStyle = "yellow";
-  pellets.forEach(p => ctx.fillRect(p.x * tileSize + 6, p.y * tileSize + 6, 4, 4));
+  ctx.fillStyle = 'yellow';
+  pellets.forEach(p => ctx.fillRect(p.x*tileSize + 6, p.y*tileSize + 6, 4, 4));
 }
 
-/* ---------------------------
-   Pac-Man / Fantasmas / Teleport
-   --------------------------- */
+/* --- Pac-Man, ghosts, teleport --- */
 function createPacman() {
-  pacman = { x: 13, y: 17, dir: { x: 0, y: 0 }, tick: 0 };
+  pacman = { x: 13, y: 17, dir: {x:0,y:0}, tick:0, mouthTimer:0, mouthOpen:true };
 }
-
 function createGhosts() {
+  // add 4 ghosts: Blinky (red), Pinky (pink), Inky (cyan), Clyde (orange)
   ghosts = [
-    { x: 13, y: 11, color: "red", dir: { x: 1, y: 0 }, tick: 0 },
-    { x: 14, y: 11, color: "pink", dir: { x: -1, y: 0 }, tick: 0 },
-    { x: 12, y: 11, color: "cyan", dir: { x: 0, y: 1 }, tick: 0 }
+    { name: 'blinky',  x: 13, y: 11, color:'red',  dir:{x:1,y:0}, tick:0, scatter: {x: map[0].length-2, y:0} },
+    { name: 'pinky',   x: 14, y: 11, color:'pink', dir:{x:-1,y:0}, tick:0, scatter: {x:0, y:0} },
+    { name: 'inky',    x: 12, y: 11, color:'cyan', dir:{x:0,y:1}, tick:0, scatter: {x: map[0].length-2, y: map.length-1} },
+    { name: 'clyde',   x: 11, y: 11, color:'orange', dir:{x:0,y:-1}, tick:0, scatter: {x:0, y: map.length-1} }
   ];
 }
-
 function teleport(entity) {
   if (entity.x < 0) entity.x = map[0].length - 1;
   else if (entity.x >= map[0].length) entity.x = 0;
@@ -336,67 +247,150 @@ function teleport(entity) {
   else if (entity.y >= map.length) entity.y = 0;
 }
 
-/* ---------------------------
-   Movimento do Pac-Man
-   --------------------------- */
-function movePacman() {
-  pacman.tick++;
-  if (pacman.tick % pacmanSpeed !== 0) return;
+/* --- helpers for BFS pathfinding on grid --- */
+function inBounds(x,y){ return y>=0 && y<map.length && x>=0 && x<map[0].length; }
+function isWalkable(x,y){ return inBounds(x,y) && map[y][x] !== '#'; }
 
-  let newDir = { x: 0, y: 0 };
-  if (keysPressed["ArrowUp"]) newDir = { x: 0, y: -1 };
-  if (keysPressed["ArrowDown"]) newDir = { x: 0, y: 1 };
-  if (keysPressed["ArrowLeft"]) newDir = { x: -1, y: 0 };
-  if (keysPressed["ArrowRight"]) newDir = { x: 1, y: 0 };
-
-  const tx = pacman.x + newDir.x;
-  const ty = pacman.y + newDir.y;
-
-  if (map[ty] && map[ty][tx] !== "#") {
-    pacman.dir = newDir;
-    pacman.x = tx;
-    pacman.y = ty;
+function bfsNextStep(sx,sy, tx,ty) {
+  // returns next tile {x,y} from (sx,sy) towards (tx,ty) using BFS shortest path
+  if (!isWalkable(tx,ty)) return null;
+  const w = map[0].length, h = map.length;
+  const q = [];
+  const seen = Array.from({length:h}, ()=>Array(w).fill(false));
+  const parent = Array.from({length:h}, ()=>Array(w).fill(null));
+  q.push({x:sx,y:sy});
+  seen[sy][sx]=true;
+  const dirs = [ {x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1} ];
+  while(q.length){
+    const cur = q.shift();
+    if (cur.x === tx && cur.y === ty) {
+      // reconstruct path
+      let p = cur;
+      while(parent[p.y][p.x] && !(parent[p.y][p.x].x === sx && parent[p.y][p.x].y === sy)){
+        p = parent[p.y][p.x];
+      }
+      // if parent is null or equals start, return p
+      if (parent[p.y][p.x] && parent[p.y][p.x].x === sx && parent[p.y][p.x].y === sy) {
+        return { x:p.x, y:p.y };
+      } else if (cur.x === sx && cur.y === sy) {
+        return { x:cur.x, y:cur.y };
+      } else {
+        // find immediate neighbor
+        let step = cur;
+        while(parent[step.y][step.x] && !(parent[step.y][step.x].x === sx && parent[step.y][step.x].y === sy)) {
+          step = parent[step.y][step.x];
+        }
+        return {x: step.x, y: step.y};
+      }
+    }
+    for (const d of dirs) {
+      const nx = cur.x + d.x, ny = cur.y + d.y;
+      if (isWalkable(nx,ny) && !seen[ny][nx]) {
+        seen[ny][nx] = true;
+        parent[ny][nx] = cur;
+        q.push({x:nx,y:ny});
+      }
+    }
   }
-  teleport(pacman);
+  return null;
 }
 
-/* ---------------------------
-   Movimento fantasmas
-   --------------------------- */
+/* --- Ghost target logic (approx original) --- */
+function ghostTarget(g) {
+  // returns target tile {x,y}
+  if (g.name === 'blinky') {
+    return { x: pacman.x, y: pacman.y };
+  }
+  if (g.name === 'pinky') {
+    // 4 tiles ahead of pacman (use direction; if zero, use pacman pos)
+    const ahead = 4;
+    const tx = pacman.x + pacman.dir.x * ahead;
+    const ty = pacman.y + pacman.dir.y * ahead;
+    return { x: tx, y: ty };
+  }
+  if (g.name === 'inky') {
+    // target = Blinky + 2*(tile2Ahead - Blinky) approximated
+    const ahead = 2;
+    const tileAheadX = pacman.x + pacman.dir.x * ahead;
+    const tileAheadY = pacman.y + pacman.dir.y * ahead;
+    const blinky = ghosts.find(gg => gg.name === 'blinky');
+    if (!blinky) return { x: tileAheadX, y: tileAheadY };
+    const vx = tileAheadX - blinky.x;
+    const vy = tileAheadY - blinky.y;
+    return { x: blinky.x + 2*vx, y: blinky.y + 2*vy };
+  }
+  if (g.name === 'clyde') {
+    // if far (>8 tiles) chase, else scatter to corner
+    const dx = pacman.x - g.x;
+    const dy = pacman.y - g.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist > 8) return { x: pacman.x, y: pacman.y };
+    return { x: g.scatter.x, y: g.scatter.y };
+  }
+  return { x: pacman.x, y: pacman.y };
+}
+
+/* --- move ghosts using BFS to target --- */
 function moveGhosts() {
   ghosts.forEach(g => {
     g.tick++;
     if (g.tick % ghostSpeed !== 0) return;
 
-    const dirs = [
-      { x: 1, y: 0 },
-      { x: -1, y: 0 },
-      { x: 0, y: 1 },
-      { x: 0, y: -1 }
-    ];
-    const valid = dirs.filter(
-      d => map[g.y + d.y] && map[g.y + d.y][g.x + d.x] !== "#"
-    );
-
-    const next = { x: g.x + g.dir.x, y: g.y + g.dir.y };
-    if (map[next.y] && map[next.y][next.x] !== "#") {
-      g.x = next.x;
-      g.y = next.y;
+    // compute target
+    const tgt = ghostTarget(g);
+    // clamp target to map bounds
+    const tx = Math.max(0, Math.min(map[0].length-1, Math.round(tgt.x)));
+    const ty = Math.max(0, Math.min(map.length-1, Math.round(tgt.y)));
+    const step = bfsNextStep(g.x, g.y, tx, ty);
+    if (step) {
+      g.x = step.x;
+      g.y = step.y;
     } else {
-      const r = valid[Math.floor(Math.random() * valid.length)];
-      if (r) {
-        g.dir = r;
-        g.x += r.x;
-        g.y += r.y;
+      // fallback random valid move
+      const dirs = [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}].filter(d=>isWalkable(g.x+d.x, g.y+d.y));
+      if (dirs.length) {
+        const r = dirs[Math.floor(Math.random()*dirs.length)];
+        g.x += r.x; g.y += r.y;
       }
     }
     teleport(g);
   });
 }
 
-/* ---------------------------
-   Comer pellets + checar colisões
-   --------------------------- */
+/* --- Pac-Man movement (grid) and mouth animation --- */
+function movePacman() {
+  pacman.tick++;
+  if (pacman.tick % pacmanSpeed !== 0) return;
+
+  // mouth timer (open/close) - animate every tick
+  pacman.mouthTimer = (pacman.mouthTimer + 1) % 20;
+  pacman.mouthOpen = pacman.mouthTimer < 10;
+
+  let newDir = {x:0,y:0};
+  if (keysPressed['ArrowUp']) newDir = {x:0,y:-1};
+  if (keysPressed['ArrowDown']) newDir = {x:0,y:1};
+  if (keysPressed['ArrowLeft']) newDir = {x:-1,y:0};
+  if (keysPressed['ArrowRight']) newDir = {x:1,y:0};
+
+  const tx = pacman.x + newDir.x;
+  const ty = pacman.y + newDir.y;
+  if (map[ty] && map[ty][tx] !== '#') {
+    pacman.dir = newDir;
+    pacman.x = tx;
+    pacman.y = ty;
+  } else {
+    // try keep moving in same direction if possible
+    const contX = pacman.x + pacman.dir.x;
+    const contY = pacman.y + pacman.dir.y;
+    if (map[contY] && map[contY][contX] !== '#') {
+      pacman.x = contX;
+      pacman.y = contY;
+    }
+  }
+  teleport(pacman);
+}
+
+/* --- eat pellets and level progression --- */
 function eatPellets() {
   pellets = pellets.filter(p => {
     if (p.x === pacman.x && p.y === pacman.y) {
@@ -407,11 +401,10 @@ function eatPellets() {
     }
     return true;
   });
-
   scoreEl.textContent = score;
   if (score > highscore) {
     highscore = score;
-    localStorage.setItem("pacmanHighscore", highscore);
+    localStorage.setItem('pacmanHighscore', highscore);
     highscoreEl.textContent = highscore;
   }
   if (pellets.length === 0) {
@@ -420,76 +413,83 @@ function eatPellets() {
   }
 }
 
+/* --- collision check --- */
 function checkCollision() {
   for (const g of ghosts) {
     if (g.x === pacman.x && g.y === pacman.y) {
       dieSound.play();
       gameOver(false);
+      break;
     }
   }
 }
 
-/* ---------------------------
-   Desenhar Pac-Man com rotação
-   --------------------------- */
+/* --- draw Pac-Man with rotating mouth (canvas animation) --- */
 function drawPacman() {
+  // compute angle based on current direction
   let angle = 0;
   if (pacman.dir.x === 1) angle = 0;
   else if (pacman.dir.x === -1) angle = Math.PI;
   else if (pacman.dir.y === -1) angle = -Math.PI / 2;
   else if (pacman.dir.y === 1) angle = Math.PI / 2;
 
-  const cx = pacman.x * tileSize + tileSize / 2;
-  const cy = pacman.y * tileSize + tileSize / 2;
-  const r = tileSize / 2;
+  const cx = pacman.x * tileSize + tileSize/2;
+  const cy = pacman.y * tileSize + tileSize/2;
+  const r = tileSize/2;
+
+  // mouth opening variation
+  const maxMouth = 0.35 * Math.PI;
+  const minMouth = 0.05 * Math.PI;
+  const t = pacman.mouthTimer / 20; // 0..1
+  // smooth triangular oscillation
+  const tri = (t < 0.5) ? (t*2) : (2*(1-t));
+  const mouth = minMouth + (maxMouth - minMouth) * tri;
 
   ctx.save();
   ctx.translate(cx, cy);
   ctx.rotate(angle);
-  const mouth = 0.25 * Math.PI;
   ctx.beginPath();
-  ctx.fillStyle = "yellow";
-  ctx.moveTo(0, 0);
-  ctx.arc(0, 0, r, mouth, 2 * Math.PI - mouth);
+  ctx.fillStyle = 'yellow';
+  ctx.moveTo(0,0);
+  ctx.arc(0,0, r, mouth, 2*Math.PI - mouth);
   ctx.closePath();
   ctx.fill();
   ctx.restore();
 }
 
-/* ---------------------------
-   Desenhar fantasmas
-   --------------------------- */
+/* --- draw ghosts --- */
 function drawGhosts() {
   ghosts.forEach(g => {
     ctx.fillStyle = g.color;
+    // body semicircle
     ctx.beginPath();
-    ctx.arc(
-      g.x * tileSize + tileSize / 2,
-      g.y * tileSize + tileSize / 2,
-      tileSize / 2,
-      Math.PI,
-      2 * Math.PI
-    );
-    ctx.fillRect(
-      g.x * tileSize,
-      g.y * tileSize + tileSize / 2,
-      tileSize,
-      tileSize / 2
-    );
+    ctx.arc(g.x*tileSize + tileSize/2, g.y*tileSize + tileSize/2, tileSize/2, Math.PI, 2*Math.PI);
+    ctx.fill();
+    // bottom rectangle
+    ctx.fillRect(g.x*tileSize, g.y*tileSize + tileSize/2, tileSize, tileSize/2);
+    // simple eyes
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(g.x*tileSize + tileSize*0.35, g.y*tileSize + tileSize*0.4, tileSize*0.12, 0, 2*Math.PI);
+    ctx.arc(g.x*tileSize + tileSize*0.65, g.y*tileSize + tileSize*0.4, tileSize*0.12, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.fillStyle = '#000';
+    ctx.beginPath();
+    ctx.arc(g.x*tileSize + tileSize*0.38, g.y*tileSize + tileSize*0.4, tileSize*0.06, 0, 2*Math.PI);
+    ctx.arc(g.x*tileSize + tileSize*0.62, g.y*tileSize + tileSize*0.4, tileSize*0.06, 0, 2*Math.PI);
     ctx.fill();
   });
 }
 
-/* ---------------------------
-   drawGame & update loop
-   --------------------------- */
+/* --- draw entire frame --- */
 function drawGame() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
   drawMap();
   drawPacman();
   drawGhosts();
 }
 
+/* --- game loop --- */
 function updateGame() {
   if (!gameRunning || paused) return;
   movePacman();
@@ -500,18 +500,16 @@ function updateGame() {
   requestAnimationFrame(updateGame);
 }
 
-/* ---------------------------
-   Game flow
-   --------------------------- */
+/* --- flow: start/setup/nextLevel/gameOver --- */
 function startGame() {
-  overlay.style.display = "none";
+  overlay.style.display = 'none';
   score = 0;
   scoreEl.textContent = score;
   levelNumber = 1;
   setupLevel();
   gameRunning = true;
   paused = false;
-  try { bgMusic.play(); } catch (e) {}
+  try { bgMusic.play(); } catch(e){}
   updateGame();
 }
 
@@ -519,8 +517,8 @@ function setupLevel() {
   createMap();
   createPacman();
   createGhosts();
-  pacmanSpeed = Math.max(8 - Math.floor(levelNumber / 5), 4);
-  ghostSpeed = Math.max(25 - levelNumber, 10);
+  pacmanSpeed = Math.max(8 - Math.floor(levelNumber/5), 4);
+  ghostSpeed = Math.max(25 - levelNumber, 8);
 }
 
 function nextLevel() {
@@ -535,133 +533,84 @@ function nextLevel() {
 
 function gameOver(win) {
   gameRunning = false;
-  try { bgMusic.pause(); } catch (e) {}
-  overlay.style.display = "flex";
-  overlay.querySelector("h1").innerText = win
-    ? "🏆 Você Zerou as 25 Fases!"
-    : "💀 Game Over";
-  overlay.querySelector("button").innerText = "🔁 Jogar Novamente";
+  try { bgMusic.pause(); } catch(e){}
+  overlay.style.display = 'flex';
+  overlay.querySelector('h1').innerText = win ? '🏆 Você Zerou as 25 Fases!' : '💀 Game Over';
+  overlay.querySelector('button').innerText = '🔁 Jogar Novamente';
 }
 
-/* ---------------------------
-   Teclado (PC)
-   --------------------------- */
-document.addEventListener("keydown", (e) => {
+/* --- keyboard controls (PC) --- */
+document.addEventListener('keydown', e => {
   if (!gameRunning) return;
   keysPressed[e.key] = true;
-  if (e.key === "p") {
+  if (e.key === 'p') {
     paused = !paused;
-    pauseOverlay.style.display = paused ? "flex" : "none";
+    pauseOverlay.style.display = paused ? 'flex' : 'none';
   }
 });
-document.addEventListener("keyup", (e) => keysPressed[e.key] = false);
+document.addEventListener('keyup', e => keysPressed[e.key] = false);
 
-/* ---------------------------
-   JOYSTICK MOBILE (injetado)
-   --------------------------- */
+/* --- remove swipe handlers: we now use joystick on mobile --- */
+
+/* --- JOYSTICK (mobile) injected --- */
 (function createJoystickIfTouch() {
-  if (!("ontouchstart" in window)) return;
-
-  const container = document.createElement("div");
-  container.className = "joystick-container";
+  if (!('ontouchstart' in window)) return;
+  const container = document.createElement('div');
+  container.className = 'joystick-container';
   Object.assign(container.style, {
-    position: "fixed",
-    left: "24px",
-    bottom: "24px",
-    width: "120px",
-    height: "120px",
-    borderRadius: "50%",
-    background: "rgba(255,255,255,0.06)",
-    border: "2px solid rgba(255,255,255,0.12)",
-    zIndex: 9999,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    touchAction: "none",
-    userSelect: "none"
+    position: 'fixed', left:'24px', bottom:'24px', width:'120px', height:'120px',
+    borderRadius:'50%', background:'rgba(255,255,255,0.06)', border:'2px solid rgba(255,255,255,0.12)',
+    zIndex:9999, display:'flex', alignItems:'center', justifyContent:'center', touchAction:'none', userSelect:'none'
   });
-
-  const stick = document.createElement("div");
+  const stick = document.createElement('div');
   Object.assign(stick.style, {
-    width: "56px",
-    height: "56px",
-    borderRadius: "50%",
-    background: "rgba(255,255,0,0.95)",
-    transform: "translate(0px,0px)",
-    transition: "transform 0.06s linear",
-    touchAction: "none",
-    boxShadow: "0 0 8px rgba(0,0,0,0.4)"
+    width:'56px', height:'56px', borderRadius:'50%', background:'rgba(255,255,0,0.95)', transform:'translate(0px,0px)',
+    transition:'transform 0.06s linear', touchAction:'none', boxShadow:'0 0 8px rgba(0,0,0,0.4)'
   });
-
   container.appendChild(stick);
   document.body.appendChild(container);
 
-  let center = { x: 0, y: 0 };
-  let active = false;
+  let center = {x:0,y:0}, active=false;
+  function setStick(x,y){ stick.style.transform = `translate(${x}px, ${y}px)`; }
+  function resetStick(){ setStick(0,0); keysPressed = {}; }
 
-  function setStick(x, y) {
-    stick.style.transform = `translate(${x}px, ${y}px)`;
-  }
-
-  function resetStick() {
-    setStick(0, 0);
-    keysPressed = {};
-  }
-
-  container.addEventListener("touchstart", (ev) => {
+  container.addEventListener('touchstart', ev => {
     ev.preventDefault();
     if (!gameRunning) return;
     active = true;
     const rect = container.getBoundingClientRect();
-    center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-  }, { passive: false });
+    center = { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
+  }, {passive:false});
 
-  container.addEventListener("touchmove", (ev) => {
+  container.addEventListener('touchmove', ev => {
     ev.preventDefault();
     if (!active || !gameRunning) return;
     const t = ev.touches[0];
     const dx = t.clientX - center.x;
     const dy = t.clientY - center.y;
-    const maxR = 36;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    const r = Math.min(dist, maxR);
+    const maxR = 36; const dist = Math.sqrt(dx*dx + dy*dy); const r = Math.min(dist, maxR);
     const ang = Math.atan2(dy, dx);
-    const sx = Math.cos(ang) * r;
-    const sy = Math.sin(ang) * r;
+    const sx = Math.cos(ang) * r, sy = Math.sin(ang) * r;
     setStick(sx, sy);
-
-    // prefer dominant axis for grid movement
+    // dominant axis
     if (Math.abs(dx) > Math.abs(dy)) {
-      keysPressed = { ArrowRight: dx > 0 };
-      if (dx > 10) keysPressed = { ArrowRight: true };
-      else if (dx < -10) keysPressed = { ArrowLeft: true };
+      if (dx > 10) keysPressed = { ArrowRight:true };
+      else if (dx < -10) keysPressed = { ArrowLeft:true };
     } else {
-      if (dy > 10) keysPressed = { ArrowDown: true };
-      else if (dy < -10) keysPressed = { ArrowUp: true };
+      if (dy > 10) keysPressed = { ArrowDown:true };
+      else if (dy < -10) keysPressed = { ArrowUp:true };
     }
-  }, { passive: false });
+  }, {passive:false});
 
-  container.addEventListener("touchend", (ev) => {
-    ev.preventDefault();
-    active = false;
-    resetStick();
-  }, { passive: false });
-
+  container.addEventListener('touchend', ev => { ev.preventDefault(); active=false; resetStick(); }, {passive:false});
 })();
 
-/* ---------------------------
-   Botões: start, música, fullscreen
-   --------------------------- */
-startBtn.addEventListener("click", startGame);
-
-musicBtn.addEventListener("click", () => {
-  try {
-    if (bgMusic.paused) bgMusic.play();
-    else bgMusic.pause();
-  } catch(e){}
+/* --- Buttons: start, music, fullscreen --- */
+startBtn.addEventListener('click', startGame);
+musicBtn.addEventListener('click', ()=>{
+  try { if (bgMusic.paused) bgMusic.play(); else bgMusic.pause(); } catch(e){}
 });
-
-fsBtn.addEventListener("click", () => {
+fsBtn.addEventListener('click', ()=>{
   if (!document.fullscreenElement) document.documentElement.requestFullscreen();
   else document.exitFullscreen();
 });
