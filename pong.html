@@ -172,6 +172,33 @@
 
 <audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
 
+<!-- ✅ BOTÕES MOBILE -->
+<div id="mobileControls" style="
+  position: absolute;
+  right: 10px;
+  bottom: 30px;
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 20;
+">
+  <button id="btnUp" style="
+    width: 70px;
+    height: 70px;
+    font-size: 28px;
+    border-radius: 50%;
+    opacity: 0.7;
+  ">▲</button>
+
+  <button id="btnDown" style="
+    width: 70px;
+    height: 70px;
+    font-size: 28px;
+    border-radius: 50%;
+    opacity: 0.7;
+  ">▼</button>
+</div>
+
 <script>
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
@@ -183,30 +210,39 @@
   const highEl = document.getElementById('highscore');
   const bgMusic = document.getElementById('bgMusic');
 
+  const mobileControls = document.getElementById("mobileControls");
+  const btnUp = document.getElementById("btnUp");
+  const btnDown = document.getElementById("btnDown");
+
+  if (window.innerWidth < 900) {
+    mobileControls.style.display = "flex";
+  }
+
   const CANVAS_W = canvas.width;
   const CANVAS_H = canvas.height;
 
-  // Jogador e IA
   const player = { x: 20, y: (CANVAS_H/2) - 40, w: 10, h: 80, dy: 0, speed: 6 };
   const ai     = { x: CANVAS_W - 30, y: (CANVAS_H/2) - 40, w: 10, h: 80, speed: 3.4 };
-
-  const ball = { x: CANVAS_W/2, y: CANVAS_H/2, size: 10, dx: 5, dy: 3 };
+  const ball   = { x: CANVAS_W/2, y: CANVAS_H/2, size: 10, dx: 5, dy: 3 };
 
   let score = 0;
   let running = false;
-  let rafId = null;
-
   let highscore = parseInt(localStorage.getItem("pongHighscore") ?? 0);
+
   scoreEl.textContent = score;
   highEl.textContent = highscore;
 
-  function drawRect(x,y,w,h,color){ ctx.fillStyle = color; ctx.fillRect(x,y,w,h); }
+  function drawRect(x,y,w,h,color){
+    ctx.fillStyle = color;
+    ctx.fillRect(x,y,w,h);
+  }
 
   function draw(){
     ctx.clearRect(0,0,CANVAS_W,CANVAS_H);
 
     ctx.fillStyle = "#222";
-    for(let i=0;i<CANVAS_H;i+=20) ctx.fillRect((CANVAS_W/2)-1, i, 2, 12);
+    for(let i=0;i<CANVAS_H;i+=20)
+      ctx.fillRect((CANVAS_W/2)-1, i, 2, 12);
 
     drawRect(player.x, player.y, player.w, player.h, "lime");
     drawRect(ai.x, ai.y, ai.w, ai.h, "red");
@@ -223,7 +259,6 @@
     const bc = ball.y + ball.size/2;
     const rel = (bc - pc) / (p.h/2);
     ball.dy = rel * 6;
-
     ball.dx = p === player ? Math.abs(ball.dx) : -Math.abs(ball.dx);
   }
 
@@ -236,6 +271,7 @@
 
     const aiCenter = ai.y + ai.h/2;
     const ballCenter = ball.y + ball.size/2;
+
     if(ballCenter < aiCenter - 10) ai.y -= ai.speed;
     else if(ballCenter > aiCenter + 10) ai.y += ai.speed;
 
@@ -268,17 +304,17 @@
     }
 
     draw();
-    rafId = requestAnimationFrame(update);
+    requestAnimationFrame(update);
   }
 
   function resetBall(){
-    ball.x = CANVAS_W / 2;
-    ball.y = CANVAS_H / 2;
+    ball.x = CANVAS_W/2;
+    ball.y = CANVAS_H/2;
     ball.dx = Math.random() > 0.5 ? 5 : -5;
     ball.dy = Math.random() * 4 - 2;
   }
 
-  function startGame(){
+  startBtn.onclick = () => {
     overlay.style.display = "none";
     running = true;
     score = 0;
@@ -286,37 +322,24 @@
     resetBall();
     bgMusic.play().catch(()=>{});
     update();
-  }
-
-  startBtn.onclick = startGame;
-
-  musicBtn.onclick = () => {
-    if(bgMusic.paused) bgMusic.play();
-    else bgMusic.pause();
   };
 
-  fsBtn.onclick = () => {
-    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-    else document.exitFullscreen();
-  };
+  musicBtn.onclick = () => bgMusic.paused ? bgMusic.play() : bgMusic.pause();
+  fsBtn.onclick = () => !document.fullscreenElement ?
+    document.documentElement.requestFullscreen() : document.exitFullscreen();
 
-  // ✅ PC keyboard
-  document.addEventListener("keydown", e=>{
+  document.addEventListener("keydown", e => {
     if(["ArrowUp","w"].includes(e.key)) player.dy = -player.speed;
     if(["ArrowDown","s"].includes(e.key)) player.dy = player.speed;
   });
 
-  document.addEventListener("keyup", e=>{
-    if(["ArrowUp","ArrowDown","w","s"].includes(e.key)) player.dy = 0;
-  });
+  document.addEventListener("keyup", () => player.dy = 0);
 
-  // ✅ MOBILE: arrastar o dedo no canvas move a raquete
-  canvas.addEventListener("touchmove", e=>{
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const y = touch.clientY - rect.top;
-    player.y = y - player.h/2;
-  }, { passive: true });
+  // ✅ BOTÕES MOBILE
+  btnUp.addEventListener("touchstart",  () => player.dy = -player.speed);
+  btnDown.addEventListener("touchstart", () => player.dy = player.speed);
+  btnUp.addEventListener("touchend", () => player.dy = 0);
+  btnDown.addEventListener("touchend", () => player.dy = 0);
 
 </script>
 
