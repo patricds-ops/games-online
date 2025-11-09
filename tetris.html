@@ -372,7 +372,7 @@
 
   resetBoard();
 
-  /* Botões MOBILE — sem alterar style */
+/* Botões MOBILE — sem alterar style */
 function isMobile(){
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
@@ -384,25 +384,30 @@ if(isMobile()){
   controls.style.width = "100%";
   controls.style.display = "flex";
   controls.style.justifyContent = "space-around";
+
   controls.innerHTML = `
-    <button onclick="piece.x--">⬅</button>
-    <button onclick="piece.x++">➡</button>
+    <button onclick="if(!collides(-1,0,piece.shape)) piece.x--; ">⬅</button>
+
+    <button onclick="if(!collides(1,0,piece.shape)) piece.x++; ">➡</button>
+
     <button 
-      onmousedown="fastDrop=true" 
-      onmouseup="fastDrop=false" 
-      ontouchstart="fastDrop=true" 
+      onmousedown="fastDrop=true"
+      onmouseup="fastDrop=false"
+      ontouchstart="fastDrop=true"
       ontouchend="fastDrop=false"
     >⬇</button>
+
     <button onclick="
-      const r = piece.shape[0].map((_,i)=>piece.shape.map(r=>r[i]).reverse());
-      if(!collides(0,0,r)) piece.shape=r;
+      const r = piece.shape[0].map((_,i)=> piece.shape.map(r=>r[i]).reverse());
+      if(!collides(0,0,r)) piece.shape = r;
     ">⟳</button>
   `;
+
   document.getElementById("gameWrapper").appendChild(controls);
 }
-
 </script>
 
 </body>
 </html>
+
 
