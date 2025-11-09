@@ -385,23 +385,26 @@ if(isMobile()){
   controls.style.display = "flex";
   controls.style.justifyContent = "space-around";
 
-  controls.innerHTML = `
-    <button onclick="if(!collides(-1,0,piece.shape)) piece.x--; ">⬅</button>
+controls.innerHTML = `
+  <button style="font-size: 32px; font-weight: bold;" onclick="if(!collides(-1,0,piece.shape)) piece.x--;">⬅</button>
 
-    <button onclick="if(!collides(1,0,piece.shape)) piece.x++; ">➡</button>
+  <button style="font-size: 32px; font-weight: bold;" onclick="if(!collides(1,0,piece.shape)) piece.x++;">➡</button>
 
-    <button 
-      onmousedown="fastDrop=true"
-      onmouseup="fastDrop=false"
-      ontouchstart="fastDrop=true"
-      ontouchend="fastDrop=false"
-    >⬇</button>
+  <button 
+    style="font-size: 32px; font-weight: bold;"
+    onmousedown="fastDrop=true"
+    onmouseup="fastDrop=false"
+    ontouchstart="fastDrop=true"
+    ontouchend="fastDrop=false"
+  >⬇</button>
 
-    <button onclick="
+  <button style="font-size: 32px; font-weight: bold;"
+    onclick="
       const r = piece.shape[0].map((_,i)=> piece.shape.map(r=>r[i]).reverse());
       if(!collides(0,0,r)) piece.shape = r;
-    ">⟳</button>
-  `;
+    "
+  >⟳</button>
+`;
 
   document.getElementById("gameWrapper").appendChild(controls);
 }
@@ -409,5 +412,6 @@ if(isMobile()){
 
 </body>
 </html>
+
 
 
