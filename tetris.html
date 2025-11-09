@@ -165,16 +165,33 @@
   const dieSound = document.getElementById("dieSound");
   const bgMusic = document.getElementById("bgMusic");
 
-  /* Recorde localStorage */
-  let highscore = localStorage.getItem("tetrisHighscore") || 0;
-  let highscoreEl = document.getElementById("highscore");
-  if (!highscoreEl) {
-      const span = document.createElement("span");
-      span.id = "highscore";
-      span.textContent = highscore;
-      document.querySelector("header").innerHTML += ` | Recorde: <span id="highscore">${highscore}</span>`;
-      highscoreEl = span;
+ /* Recorde localStorage — versão corrigida */
+let highscore = parseInt(localStorage.getItem("tetrisHighscore"), 10);
+if (!Number.isFinite(highscore)) highscore = 0;
+
+let highscoreEl = document.getElementById("highscore");
+if (!highscoreEl) {
+  // cria span e insere no header sem usar innerHTML (não quebra botões/eventos)
+  highscoreEl = document.createElement("span");
+  highscoreEl.id = "highscore";
+  highscoreEl.textContent = highscore;
+
+  const header = document.querySelector("header");
+  const firstBtn = header.querySelector("button"); // para inserir antes dos botões
+
+  const textNode = document.createTextNode(" | Recorde: ");
+  if (firstBtn) {
+    header.insertBefore(textNode, firstBtn);
+    header.insertBefore(highscoreEl, firstBtn);
+  } else {
+    header.appendChild(textNode);
+    header.appendChild(highscoreEl);
   }
+} else {
+  // atualiza o texto do elemento já existente
+  highscoreEl.textContent = highscore;
+}
+
 
   const COLS = 10, ROWS = 20, BLOCK = 24;
   canvas.width = COLS * BLOCK;
@@ -385,7 +402,7 @@ if(isMobile()){
   controls.style.display = "flex";
   controls.style.justifyContent = "space-around";
 
-controls.innerHTML = `
+  controls.innerHTML = `
   <button style="font-size: 32px; font-weight: bold;" onclick="if(!collides(-1,0,piece.shape)) piece.x--;">⬅</button>
 
   <button style="font-size: 32px; font-weight: bold;" onclick="if(!collides(1,0,piece.shape)) piece.x++;">➡</button>
@@ -412,6 +429,3 @@ controls.innerHTML = `
 
 </body>
 </html>
-
-
-
